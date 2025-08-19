@@ -46,8 +46,7 @@
         <div id="cardsSection">
             <button id="addCardBtn" class="w-full bg-blue-500 text-white py-3 px-4 rounded-lg mb-6 flex items-center justify-center gap-2 hover:bg-blue-600 transition-colors">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="m12 5-7 7 7 7"></path>
-                    <path d="m19 12-7 7-7-7"></path>
+                    <path d="M12 5v14M5 12h14"></path>
                 </svg>
                 Add New Card
             </button>
@@ -69,8 +68,7 @@
         <div id="transactionsSection" style="display: none;">
             <button id="addTransactionBtn" class="w-full bg-green-500 text-white py-3 px-4 rounded-lg mb-6 flex items-center justify-center gap-2 hover:bg-green-600 transition-colors">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="m12 5-7 7 7 7"></path>
-                    <path d="m19 12-7 7-7-7"></path>
+                    <path d="M12 5v14M5 12h14"></path>
                 </svg>
                 Add Transaction
             </button>
@@ -203,6 +201,7 @@
 
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('App initializing...');
             initializeColorPickers();
             setupEventListeners();
             updateDisplay();
@@ -211,18 +210,21 @@
 
         function setTodayDate() {
             const today = new Date().toISOString().split('T')[0];
-            document.getElementById('transactionDate').value = today;
+            const transactionDateEl = document.getElementById('transactionDate');
+            if (transactionDateEl) {
+                transactionDateEl.value = today;
+            }
         }
 
         function initializeColorPickers() {
             const colorPicker = document.getElementById('colorPicker');
             const editColorPicker = document.getElementById('editColorPicker');
             
-            cardColors.forEach(color => {
+            cardColors.forEach((color, index) => {
                 // Add card color picker
                 const button = document.createElement('button');
                 button.type = 'button';
-                button.className = `w-8 h-8 rounded-full border-2 ${color === selectedCardColor ? 'border-gray-800' : 'border-gray-300'}`;
+                button.className = `w-8 h-8 rounded-full border-2 ${index === 0 ? 'border-gray-800' : 'border-gray-300'}`;
                 button.style.backgroundColor = color;
                 button.onclick = () => selectColor(color, false);
                 colorPicker.appendChild(button);
@@ -256,6 +258,8 @@
         }
 
         function setupEventListeners() {
+            console.log('Setting up event listeners...');
+            
             // Tab switching
             document.getElementById('cardsTab').addEventListener('click', () => switchTab('cards'));
             document.getElementById('transactionsTab').addEventListener('click', () => switchTab('transactions'));
@@ -281,6 +285,7 @@
         }
 
         function switchTab(tab) {
+            console.log('Switching to tab:', tab);
             activeTab = tab;
             
             // Update tab buttons
@@ -298,6 +303,7 @@
         }
 
         function showModal(modalId) {
+            console.log('Showing modal:', modalId);
             document.getElementById(modalId).style.display = 'flex';
             if (modalId === 'addTransactionModal') {
                 updateTransactionCardSelect();
@@ -305,6 +311,7 @@
         }
 
         function hideModal(modalId) {
+            console.log('Hiding modal:', modalId);
             document.getElementById(modalId).style.display = 'none';
             if (modalId === 'addCardModal') {
                 clearCardForm();
@@ -333,6 +340,7 @@
         }
 
         function addCard() {
+            console.log('Adding card...');
             const name = document.getElementById('cardName').value.trim();
             const lastFour = document.getElementById('cardLastFour').value.trim();
             const limit = parseFloat(document.getElementById('cardLimit').value) || 0;
@@ -356,6 +364,7 @@
             };
 
             cards.push(card);
+            console.log('Card added:', card);
             saveData();
             updateDisplay();
             hideModal('addCardModal');
@@ -411,7 +420,51 @@
             hideModal('editCardModal');
         }
 
+        function togglePayment(cardId) {
+            console.log('Toggling payment for card:', cardId);
+            const paymentDiv = document.getElementById(`payment-${cardId}`);
+            if (paymentDiv) {
+                const isVisible = paymentDiv.style.display !== 'none';
+                paymentDiv.style.display = isVisible ? 'none' : 'block';
+                if (!isVisible) {
+                    const amountInput = document.getElementById(`amount-${cardId}`);
+                    if (amountInput) {
+                        amountInput.focus();
+                    }
+                }
+            }
+        }
+
+        function confirmPayment(cardId) {
+            console.log('Confirming payment for card:', cardId);
+            const amountInput = document.getElementById(`amount-${cardId}`);
+            if (amountInput) {
+                const amount = amountInput.value;
+                if (amount && parseFloat(amount) > 0) {
+                    payBill(cardId, amount);
+                    amountInput.value = '';
+                    const paymentDiv = document.getElementById(`payment-${cardId}`);
+                    if (paymentDiv) {
+                        paymentDiv.style.display = 'none';
+                    }
+                }
+            }
+        }
+
+        function cancelPayment(cardId) {
+            console.log('Cancelling payment for card:', cardId);
+            const amountInput = document.getElementById(`amount-${cardId}`);
+            const paymentDiv = document.getElementById(`payment-${cardId}`);
+            if (amountInput) {
+                amountInput.value = '';
+            }
+            if (paymentDiv) {
+                paymentDiv.style.display = 'none';
+            }
+        }
+
         function payBill(cardId, amount) {
+            console.log('Paying bill for card:', cardId, 'amount:', amount);
             const paymentAmount = parseFloat(amount);
             if (!paymentAmount || paymentAmount <= 0) return;
 
@@ -441,6 +494,7 @@
         }
 
         function addTransaction() {
+            console.log('Adding transaction...');
             const cardId = document.getElementById('transactionCard').value;
             const description = document.getElementById('transactionDesc').value.trim();
             const amount = parseFloat(document.getElementById('transactionAmount').value);
@@ -497,12 +551,17 @@
             });
         }
 
+        function getCardTransactions(cardId) {
+            return transactions.filter(t => t.cardId === cardId);
+        }
+
         function saveData() {
             localStorage.setItem('creditCards', JSON.stringify(cards));
             localStorage.setItem('transactions', JSON.stringify(transactions));
         }
 
         function updateDisplay() {
+            console.log('Updating display...');
             updateCardsDisplay();
             updateTransactionsDisplay();
             updateSummaryStats();
@@ -524,6 +583,7 @@
         function createCardHTML(card) {
             const utilization = card.creditLimit > 0 ? (card.currentBalance / card.creditLimit) * 100 : 0;
             const utilizationColor = utilization > 80 ? 'bg-red-500' : utilization > 60 ? 'bg-yellow-500' : 'bg-green-500';
+            const cardTransactions = getCardTransactions(card.id);
             
             return `
                 <div class="bg-white rounded-xl shadow-lg p-6 mb-4">
@@ -582,45 +642,4 @@
                         <div id="payment-${card.id}" class="mt-4 p-4 bg-gray-50 rounded-lg" style="display: none;">
                             <div class="flex gap-2">
                                 <input type="number" id="amount-${card.id}" placeholder="Payment amount" class="flex-1 p-2 border border-gray-300 rounded-lg">
-                                <button onclick="confirmPayment('${card.id}')" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <polyline points="20,6 9,17 4,12"></polyline>
-                                    </svg>
-                                </button>
-                                <button onclick="cancelPayment('${card.id}')" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="m18 6-12 12"></path>
-                                        <path d="m6 6 12 12"></path>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="text-sm text-gray-600">
-                            ${getCardTransactions(card.id).length} transactions
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function togglePayment(cardId) {
-            const paymentDiv = document.getElementById(`payment-${cardId}`);
-            const isVisible = paymentDiv.style.display !== 'none';
-            paymentDiv.style.display = isVisible ? 'none' : 'block';
-            if (!isVisible) {
-                document.getElementById(`amount-${cardId}`).focus();
-            }
-        }
-
-        function confirmPayment(cardId) {
-            const amount = document.getElementById(`amount-${cardId}`).value;
-            if (amount && parseFloat(amount) > 0) {
-                payBill(cardId, amount);
-                document.getElementById(`amount-${cardId}`).value = '';
-                document.getElementById(`payment-${cardId}`).style.display = 'none';
-            }
-        }
-
-        function cancelPayment(cardId) {
-            document.getElementById(`amount-${cardId}`).value = '';
+                                <button onclick="confirmPay
