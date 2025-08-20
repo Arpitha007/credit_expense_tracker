@@ -269,8 +269,113 @@
             margin: 10px 0;
         }
 
-        .summary-item h3 {
-            font-size: 1.5rem;
+        .due-date-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-left: 4px solid #007bff;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .due-date-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .due-date-card.overdue {
+            border-left-color: #dc3545;
+            background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
+        }
+
+        .due-date-card.due-soon {
+            border-left-color: #ffc107;
+            background: linear-gradient(135deg, #fffbf0 0%, #ffffff 100%);
+        }
+
+        .due-date-card.due-today {
+            border-left-color: #ff6b6b;
+            background: linear-gradient(135deg, #fff0f0 0%, #ffffff 100%);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+            50% { box-shadow: 0 4px 20px rgba(255,107,107,0.3); }
+            100% { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        }
+
+        .due-date-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .due-date-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-overdue {
+            background: #dc3545;
+            color: white;
+        }
+
+        .status-due-today {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .status-due-soon {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .status-upcoming {
+            background: #28a745;
+            color: white;
+        }
+
+        .due-date-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .due-date-detail {
+            text-align: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .due-date-detail h4 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .due-date-detail p {
+            font-size: 0.9rem;
+            color: #666;
+            margin: 0;
+        }
+
+        .next-due-date {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, #e3f2fd 0%, #ffffff 100%);
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .next-due-date h3 {
+            color: #1976d2;
             margin-bottom: 5px;
         }
 
@@ -281,8 +386,8 @@
             }
             
             .nav-btn {
-                font-size: 0.8rem;
-                padding: 12px 8px;
+                font-size: 0.7rem;
+                padding: 10px 6px;
             }
             
             .content {
@@ -303,6 +408,11 @@
                 margin-top: 10px;
                 align-self: flex-end;
             }
+
+            .due-date-info {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
         }
     </style>
 </head>
@@ -318,6 +428,7 @@
             <button class="nav-btn" onclick="showSection('cards')">Cards</button>
             <button class="nav-btn" onclick="showSection('transactions')">Transactions</button>
             <button class="nav-btn" onclick="showSection('payments')">Payments</button>
+            <button class="nav-btn" onclick="showSection('duedates')">Due Dates</button>
         </div>
 
         <div class="content">
@@ -359,6 +470,13 @@
             <div id="payments" class="section">
                 <h3>Pay Bills</h3>
                 <div id="paymentsList"></div>
+            </div>
+
+            <!-- Due Dates Section -->
+            <div id="duedates" class="section">
+                <h3>📅 Upcoming Due Dates</h3>
+                <p style="color: #666; margin-bottom: 20px;">Track your credit card payment due dates</p>
+                <div id="dueDatesList"></div>
             </div>
         </div>
     </div>
@@ -483,10 +601,14 @@
             renderCards();
             renderTransactions();
             renderPayments();
+            renderDueDates();
             updateCardSelectors();
             
             // Set default date to today
             document.getElementById('transactionDate').value = new Date().toISOString().split('T')[0];
+            
+            // Debug: Check if edit modal exists
+            console.log('Edit modal element:', document.getElementById('editTransactionModal'));
         });
 
         // Load data from localStorage
@@ -496,10 +618,30 @@
             
             if (savedCards) {
                 cards = JSON.parse(savedCards);
+            } else {
+                // Add sample data for testing if no data exists
+                cards = [{
+                    id: 1,
+                    name: 'Sample Card',
+                    number: '**** **** **** 1234',
+                    creditLimit: 50000,
+                    currentBalance: 5000,
+                    dueDate: '2025-09-15'
+                }];
             }
             
             if (savedTransactions) {
                 transactions = JSON.parse(savedTransactions);
+            } else {
+                // Add sample transaction for testing
+                transactions = [{
+                    id: 1,
+                    cardId: 1,
+                    amount: 2500,
+                    description: 'Sample Purchase',
+                    category: 'shopping',
+                    date: '2025-08-15'
+                }];
             }
         }
 
@@ -547,6 +689,8 @@
             cards.push(card);
             saveData();
             renderCards();
+            renderPayments();
+            renderDueDates();
             updateDashboard();
             updateCardSelectors();
             closeModal('addCardModal');
@@ -580,6 +724,8 @@
             saveData();
             renderCards();
             renderTransactions();
+            renderPayments();
+            renderDueDates();
             updateDashboard();
             closeModal('addTransactionModal');
             this.reset();
@@ -621,6 +767,8 @@
             saveData();
             renderCards();
             renderTransactions();
+            renderPayments();
+            renderDueDates();
             updateDashboard();
             closeModal('editTransactionModal');
             editingTransactionId = null;
@@ -628,19 +776,32 @@
 
         // Edit transaction function
         function editTransaction(transactionId) {
+            console.log('Edit transaction called with ID:', transactionId);
             const transaction = transactions.find(t => t.id === transactionId);
-            if (!transaction) return;
+            console.log('Found transaction:', transaction);
+            
+            if (!transaction) {
+                console.error('Transaction not found');
+                return;
+            }
             
             editingTransactionId = transactionId;
             
-            // Populate edit form
-            document.getElementById('editTransactionCard').value = transaction.cardId;
-            document.getElementById('editTransactionAmount').value = transaction.amount;
-            document.getElementById('editTransactionDescription').value = transaction.description;
-            document.getElementById('editTransactionCategory').value = transaction.category;
-            document.getElementById('editTransactionDate').value = transaction.date;
+            // Update card selectors first to ensure options exist
+            updateCardSelectors();
             
-            openModal('editTransactionModal');
+            // Small delay to ensure DOM is updated
+            setTimeout(() => {
+                // Populate edit form
+                document.getElementById('editTransactionCard').value = transaction.cardId;
+                document.getElementById('editTransactionAmount').value = transaction.amount;
+                document.getElementById('editTransactionDescription').value = transaction.description;
+                document.getElementById('editTransactionCategory').value = transaction.category;
+                document.getElementById('editTransactionDate').value = transaction.date;
+                
+                console.log('Form populated, opening modal');
+                openModal('editTransactionModal');
+            }, 100);
         }
 
         // Delete transaction function
@@ -662,6 +823,8 @@
             saveData();
             renderCards();
             renderTransactions();
+            renderPayments();
+            renderDueDates();
             updateDashboard();
         }
 
@@ -762,6 +925,7 @@
                 renderCards();
                 renderTransactions();
                 renderPayments();
+                renderDueDates();
                 updateDashboard();
                 
                 alert('Payment successful!');
@@ -777,6 +941,7 @@
                 renderCards();
                 renderTransactions();
                 renderPayments();
+                renderDueDates();
                 updateDashboard();
                 updateCardSelectors();
             }
