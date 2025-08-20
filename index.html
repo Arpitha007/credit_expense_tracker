@@ -828,11 +828,21 @@
             const transactionCard = document.getElementById('transactionCard');
             const editTransactionCard = document.getElementById('editTransactionCard');
             
-            const cardOptions = '<option value="">Select a card</option>' + 
-                cards.map(card => `<option value="${card.id}">${card.name} (${card.number})</option>`).join('');
+            // Clear existing options
+            transactionCard.innerHTML = '<option value="">Select a card</option>';
+            editTransactionCard.innerHTML = '<option value="">Select a card</option>';
             
-            transactionCard.innerHTML = cardOptions;
-            editTransactionCard.innerHTML = cardOptions;
+            cards.forEach(card => {
+                const option1 = document.createElement('option');
+                option1.value = card.id;
+                option1.textContent = `${card.name} (${card.number})`;
+                transactionCard.appendChild(option1);
+                
+                const option2 = document.createElement('option');
+                option2.value = card.id;
+                option2.textContent = `${card.name} (${card.number})`;
+                editTransactionCard.appendChild(option2);
+            });
         }
 
         // Close modal when clicking outside
