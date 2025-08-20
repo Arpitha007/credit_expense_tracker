@@ -286,24 +286,39 @@
 
         .due-date-card.overdue {
             border-left-color: #dc3545;
-            background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
+            background: linear-gradient(135deg, #fff5f5 0%, #ffebee 100%);
         }
 
         .due-date-card.due-soon {
             border-left-color: #ffc107;
-            background: linear-gradient(135deg, #fffbf0 0%, #ffffff 100%);
+            background: linear-gradient(135deg, #fffbf0 0%, #fff8e1 100%);
         }
 
         .due-date-card.due-today {
             border-left-color: #ff6b6b;
-            background: linear-gradient(135deg, #fff0f0 0%, #ffffff 100%);
+            background: linear-gradient(135deg, #fff0f0 0%, #ffebee 100%);
             animation: pulse 2s infinite;
+            border: 2px solid #ff6b6b;
+        }
+
+        .due-date-card.upcoming {
+            border-left-color: #28a745;
+            background: linear-gradient(135deg, #f0fff4 0%, #e8f5e8 100%);
         }
 
         @keyframes pulse {
-            0% { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-            50% { box-shadow: 0 4px 20px rgba(255,107,107,0.3); }
-            100% { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+            0% { 
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 4px 20px rgba(255,107,107,0.4);
+                transform: scale(1.02);
+            }
+            100% { 
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                transform: scale(1);
+            }
         }
 
         .due-date-header {
@@ -323,21 +338,37 @@
         .status-overdue {
             background: #dc3545;
             color: white;
+            font-weight: bold;
+            animation: blink 1.5s infinite;
         }
 
         .status-due-today {
             background: #ff6b6b;
             color: white;
+            font-weight: bold;
+            animation: glow 2s infinite;
         }
 
         .status-due-soon {
             background: #ffc107;
             color: #212529;
+            font-weight: bold;
         }
 
         .status-upcoming {
             background: #28a745;
             color: white;
+            font-weight: bold;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.7; }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(255,107,107,0.5); }
+            50% { box-shadow: 0 0 15px rgba(255,107,107,0.8); }
         }
 
         .due-date-info {
@@ -478,6 +509,7 @@
                 <p style="color: #666; margin-bottom: 20px;">Track your credit card payment due dates</p>
                 <div id="dueDatesList"></div>
             </div>
+
         </div>
     </div>
 
@@ -607,7 +639,9 @@
             // Set default date to today
             document.getElementById('transactionDate').value = new Date().toISOString().split('T')[0];
             
-            // Debug: Check if edit modal exists
+            // Debug: Check if sections exist
+            console.log('Dashboard section:', document.getElementById('dashboard'));
+            console.log('Due dates section:', document.getElementById('duedates'));
             console.log('Edit modal element:', document.getElementById('editTransactionModal'));
         });
 
@@ -653,6 +687,8 @@
 
         // Show section
         function showSection(sectionId) {
+            console.log('Showing section:', sectionId); // Debug log
+            
             document.querySelectorAll('.section').forEach(section => {
                 section.classList.remove('active');
             });
@@ -660,8 +696,20 @@
                 btn.classList.remove('active');
             });
             
-            document.getElementById(sectionId).classList.add('active');
-            event.target.classList.add('active');
+            const targetSection = document.getElementById(sectionId);
+            const targetButton = event.target;
+            
+            if (targetSection) {
+                targetSection.classList.add('active');
+                targetButton.classList.add('active');
+                
+                // If showing due dates section, render it
+                if (sectionId === 'duedates') {
+                    renderDueDates();
+                }
+            } else {
+                console.error('Section not found:', sectionId);
+            }
         }
 
         // Modal functions
