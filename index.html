@@ -15,7 +15,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
+            padding: 10px;
         }
 
         .container {
@@ -23,16 +23,16 @@
             margin: 0 auto;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
+            border-radius: 15px;
+            padding: 15px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
             text-align: center;
             color: #333;
-            margin-bottom: 30px;
-            font-size: 2.5em;
+            margin-bottom: 20px;
+            font-size: 2em;
             background: linear-gradient(45deg, #667eea, #764ba2);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -41,71 +41,73 @@
 
         .dashboard {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 30px;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
         .stat-card {
             background: linear-gradient(135deg, #ff6b6b, #ee5a24);
             color: white;
-            padding: 20px;
-            border-radius: 15px;
+            padding: 15px;
+            border-radius: 12px;
             text-align: center;
-            box-shadow: 0 10px 25px rgba(255, 107, 107, 0.3);
+            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
             transform: translateY(0);
             transition: transform 0.3s ease;
         }
 
         .stat-card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-3px);
         }
 
         .stat-card:nth-child(2) {
             background: linear-gradient(135deg, #74b9ff, #0984e3);
-            box-shadow: 0 10px 25px rgba(116, 185, 255, 0.3);
+            box-shadow: 0 8px 20px rgba(116, 185, 255, 0.3);
         }
 
         .stat-card:nth-child(3) {
             background: linear-gradient(135deg, #00b894, #00a085);
-            box-shadow: 0 10px 25px rgba(0, 184, 148, 0.3);
+            box-shadow: 0 8px 20px rgba(0, 184, 148, 0.3);
         }
 
         .stat-card:nth-child(4) {
             background: linear-gradient(135deg, #55a3ff, #003d82);
-            box-shadow: 0 10px 25px rgba(85, 163, 255, 0.3);
+            box-shadow: 0 8px 20px rgba(85, 163, 255, 0.3);
         }
 
         .stat-value {
-            font-size: 1.8em;
+            font-size: 1.4em;
             font-weight: bold;
             margin-bottom: 5px;
+            word-break: break-all;
         }
 
         .stat-label {
-            font-size: 0.9em;
+            font-size: 0.8em;
             opacity: 0.9;
+            line-height: 1.2;
         }
 
         .form-section {
             background: rgba(255, 255, 255, 0.8);
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
         }
 
         .form-section h2 {
             color: #333;
-            margin-bottom: 20px;
-            font-size: 1.5em;
+            margin-bottom: 15px;
+            font-size: 1.3em;
         }
 
         .form-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 15px;
         }
 
         .form-group {
@@ -117,79 +119,95 @@
             margin-bottom: 5px;
             font-weight: 600;
             color: #555;
+            font-size: 0.9em;
         }
 
         input, select, textarea {
             padding: 12px;
             border: 2px solid #e0e0e0;
-            border-radius: 10px;
+            border-radius: 8px;
             font-size: 16px;
             transition: border-color 0.3s ease;
             background: rgba(255, 255, 255, 0.9);
+            width: 100%;
         }
 
         input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: #667eea;
-            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 0 8px rgba(102, 126, 234, 0.3);
         }
 
         button {
             background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             border: none;
-            padding: 12px 25px;
-            border-radius: 10px;
+            padding: 12px 20px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 600;
             transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            width: 100%;
+            margin-top: 5px;
         }
 
         button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
         }
 
         .filters {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .button-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
         }
 
         .expense-list {
             background: rgba(255, 255, 255, 0.8);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
         }
 
         .expense-item {
             background: rgba(255, 255, 255, 0.9);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 10px;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
             border-left: 4px solid #667eea;
             transition: all 0.3s ease;
-            cursor: pointer;
         }
 
         .expense-item:hover {
-            transform: translateX(5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .expense-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
         .expense-amount {
-            font-size: 1.2em;
+            font-size: 1.1em;
             font-weight: bold;
             color: #e74c3c;
         }
@@ -197,92 +215,103 @@
         .expense-category {
             background: #667eea;
             color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8em;
+            padding: 3px 8px;
+            border-radius: 15px;
+            font-size: 0.7em;
             font-weight: 600;
-            margin-right: 8px;
+            margin: 2px;
+            display: inline-block;
         }
 
         .expense-details {
             color: #666;
-            font-size: 0.9em;
+            font-size: 0.85em;
+            line-height: 1.3;
         }
 
         .expense-date {
             color: #999;
-            font-size: 0.8em;
+            font-size: 0.75em;
             margin-top: 5px;
         }
 
         .delete-btn {
             background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-            padding: 5px 10px;
-            font-size: 0.8em;
-            margin-left: 10px;
+            padding: 6px 12px;
+            font-size: 0.75em;
+            margin: 0;
+            width: auto;
+            flex-shrink: 0;
         }
 
         .card-item {
             background: rgba(255, 255, 255, 0.9);
-            padding: 15px;
-            border-radius: 10px;
+            padding: 12px;
+            border-radius: 8px;
             margin-bottom: 8px;
             border-left: 4px solid #74b9ff;
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .card-name {
             font-weight: 600;
             color: #333;
+            font-size: 0.9em;
         }
 
-        .card-total {
-            font-weight: bold;
-            color: #e74c3c;
-            margin-left: 10px;
+        .card-details {
+            font-size: 0.75em;
+            color: #666;
+            margin-top: 3px;
         }
 
         .no-expenses {
             text-align: center;
             color: #666;
             font-style: italic;
-            padding: 40px;
+            padding: 30px 15px;
+            font-size: 0.9em;
         }
 
         .expense-card {
             background: #74b9ff;
             color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8em;
+            padding: 3px 8px;
+            border-radius: 15px;
+            font-size: 0.7em;
             font-weight: 600;
+            margin: 2px;
+            display: inline-block;
         }
 
         .emi-item {
             background: rgba(255, 255, 255, 0.9);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 10px;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
             border-left: 4px solid #00b894;
             transition: all 0.3s ease;
         }
 
         .emi-item:hover {
-            transform: translateX(5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .emi-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
         .emi-amount {
-            font-size: 1.2em;
+            font-size: 1.1em;
             font-weight: bold;
             color: #00b894;
         }
@@ -290,11 +319,11 @@
         .emi-status {
             background: #00b894;
             color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.8em;
+            padding: 3px 8px;
+            border-radius: 15px;
+            font-size: 0.7em;
             font-weight: 600;
-            margin-left: 8px;
+            margin-left: 5px;
         }
 
         .emi-status.completed {
@@ -303,17 +332,18 @@
 
         .emi-details {
             color: #666;
-            font-size: 0.9em;
+            font-size: 0.85em;
+            line-height: 1.3;
         }
 
         .emi-progress {
-            margin-top: 10px;
+            margin-top: 8px;
         }
 
         .progress-bar {
             background: #e0e0e0;
-            height: 8px;
-            border-radius: 4px;
+            height: 6px;
+            border-radius: 3px;
             overflow: hidden;
         }
 
@@ -324,63 +354,238 @@
         }
 
         .progress-text {
-            font-size: 0.8em;
+            font-size: 0.7em;
             color: #666;
-            margin-top: 5px;
+            margin-top: 3px;
+            line-height: 1.2;
         }
 
         .success-message {
             background: #00b894;
             color: white;
-            padding: 10px;
+            padding: 8px;
             border-radius: 5px;
-            margin: 10px 0;
+            margin: 8px 0;
             opacity: 0;
             transition: opacity 0.3s ease;
+            font-size: 0.9em;
         }
 
         .success-message.show {
             opacity: 1;
         }
 
-        @media (max-width: 768px) {
+        /* Card management section optimizations */
+        .card-management {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .card-input-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            align-items: end;
+        }
+
+        /* EMI form optimizations */
+        .emi-form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .emi-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        /* Expense form optimizations */
+        .expense-form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .expense-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        /* Tag-style display for categories and cards */
+        .tag-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            align-items: center;
+        }
+
+        /* Better mobile button sizing */
+        .small-btn {
+            padding: 8px 12px;
+            font-size: 0.75em;
+            min-width: auto;
+            width: auto;
+        }
+
+        /* Mobile-specific dashboard layout */
+        @media (max-width: 600px) {
+            body {
+                padding: 5px;
+            }
+
+            .container {
+                padding: 12px;
+                border-radius: 12px;
+            }
+
+            h1 {
+                font-size: 1.6em;
+                margin-bottom: 15px;
+            }
+
             .dashboard {
                 grid-template-columns: 1fr 1fr;
+                gap: 8px;
+                margin-bottom: 15px;
             }
-            
-            .form-grid {
-                grid-template-columns: 1fr;
+
+            .stat-card {
+                padding: 12px 8px;
             }
-            
-            .filters {
-                flex-direction: column;
+
+            .stat-value {
+                font-size: 1.2em;
             }
-            
-            .expense-header, .emi-header {
+
+            .stat-label {
+                font-size: 0.7em;
+            }
+
+            .form-section {
+                padding: 12px;
+                margin-bottom: 15px;
+            }
+
+            .form-section h2 {
+                font-size: 1.1em;
+                margin-bottom: 12px;
+            }
+
+            button {
+                padding: 10px 15px;
+                font-size: 13px;
+            }
+
+            .delete-btn {
+                padding: 4px 8px;
+                font-size: 0.7em;
+            }
+
+            .expense-header {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 10px;
+                gap: 5px;
             }
-            
-            .stat-value {
-                font-size: 1.5em;
+
+            .emi-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+
+            .card-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .expense-amount, .emi-amount {
+                font-size: 1em;
+            }
+
+            .expense-category, .expense-card, .emi-status {
+                font-size: 0.65em;
+                padding: 2px 6px;
             }
         }
 
-        @media (max-width: 480px) {
+        /* Very small screens */
+        @media (max-width: 400px) {
             .dashboard {
                 grid-template-columns: 1fr;
+                gap: 6px;
             }
-            
+
+            .stat-value {
+                font-size: 1.1em;
+            }
+
             h1 {
-                font-size: 2em;
+                font-size: 1.4em;
             }
+
+            .container {
+                padding: 10px;
+            }
+
+            .form-section {
+                padding: 10px;
+            }
+
+            .expense-row, .emi-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Improve touch targets */
+        button, input, select, textarea {
+            min-height: 44px;
+        }
+
+        .delete-btn {
+            min-height: 36px;
+        }
+
+        /* Better text wrapping */
+        .expense-details, .emi-details, .card-details {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        /* Scrollable containers for long lists */
+        .expense-list, #cardsList, #emiList {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .expense-list::-webkit-scrollbar,
+        #cardsList::-webkit-scrollbar,
+        #emiList::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .expense-list::-webkit-scrollbar-track,
+        #cardsList::-webkit-scrollbar-track,
+        #emiList::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .expense-list::-webkit-scrollbar-thumb,
+        #cardsList::-webkit-scrollbar-thumb,
+        #emiList::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 3px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>💳 Credit Card Expense & EMI Tracker</h1>
+        <h1>💳 Credit Card Tracker</h1>
         
         <div class="dashboard">
             <div class="stat-card">
@@ -397,19 +602,19 @@
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="expenseCount">0</div>
-                <div class="stat-label">Total Transactions</div>
+                <div class="stat-label">Transactions</div>
             </div>
         </div>
 
         <div class="form-section">
             <h2>📱 Manage Credit Cards</h2>
-            <div class="form-grid" style="grid-template-columns: 2fr 1fr; align-items: end;">
-                <div class="form-group">
-                    <label for="newCardName">Add New Credit Card</label>
-                    <input type="text" id="newCardName" placeholder="e.g., HDFC Regalia, SBI Card, ICICI Amazon Pay">
-                </div>
-                <div class="form-group">
-                    <button type="button" onclick="addCreditCard()">Add Card</button>
+            <div class="card-management">
+                <div class="card-input-row">
+                    <div class="form-group">
+                        <label for="newCardName">Add New Credit Card</label>
+                        <input type="text" id="newCardName" placeholder="e.g., HDFC Regalia">
+                    </div>
+                    <button type="button" onclick="addCreditCard()" class="small-btn">Add</button>
                 </div>
             </div>
             <div id="cardsList"></div>
@@ -417,32 +622,34 @@
 
         <div class="form-section">
             <h2>📊 Manage EMIs</h2>
-            <div class="form-grid" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="emi-form-grid">
                 <div class="form-group">
                     <label for="emiDescription">EMI Description</label>
-                    <input type="text" id="emiDescription" placeholder="e.g., iPhone 15, Car Loan, Home Loan">
+                    <input type="text" id="emiDescription" placeholder="e.g., iPhone 15, Car Loan">
                 </div>
-                <div class="form-group">
-                    <label for="emiAmount">Monthly EMI Amount (₹)</label>
-                    <input type="number" id="emiAmount" step="0.01" placeholder="Monthly installment amount">
+                <div class="emi-row">
+                    <div class="form-group">
+                        <label for="emiAmount">Monthly Amount (₹)</label>
+                        <input type="number" id="emiAmount" step="0.01" placeholder="Monthly EMI">
+                    </div>
+                    <div class="form-group">
+                        <label for="emiTenure">Tenure (Months)</label>
+                        <input type="number" id="emiTenure" placeholder="Total months" min="1" max="600">
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="emiStartDate">Start Date</label>
-                    <input type="date" id="emiStartDate">
+                <div class="emi-row">
+                    <div class="form-group">
+                        <label for="emiStartDate">Start Date</label>
+                        <input type="date" id="emiStartDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="emiCard">Credit Card</label>
+                        <select id="emiCard">
+                            <option value="">Select Card</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="emiTenure">Tenure (Months)</label>
-                    <input type="number" id="emiTenure" placeholder="Total number of months" min="1" max="600">
-                </div>
-                <div class="form-group">
-                    <label for="emiCard">Credit Card</label>
-                    <select id="emiCard">
-                        <option value="">Select Credit Card</option>
-                    </select>
-                </div>
-                <div class="form-group" style="display: flex; align-items: end;">
-                    <button type="button" onclick="addEMI()">Add EMI</button>
-                </div>
+                <button type="button" onclick="addEMI()">Add EMI</button>
             </div>
             <div id="emiList"></div>
         </div>
@@ -450,45 +657,49 @@
         <div class="form-section">
             <h2>💰 Add New Expense</h2>
             <form id="expenseForm">
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="amount">Amount (₹)</label>
-                        <input type="number" id="amount" step="0.01" min="0" required>
+                <div class="expense-form-grid">
+                    <div class="expense-row">
+                        <div class="form-group">
+                            <label for="amount">Amount (₹)</label>
+                            <input type="number" id="amount" step="0.01" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="date">Date</label>
+                            <input type="date" id="date" required>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="category">Category</label>
-                        <select id="category" required>
-                            <option value="">Select Category</option>
-                            <option value="Food & Dining">Food & Dining</option>
-                            <option value="Gas & Transport">Gas & Transport</option>
-                            <option value="Shopping">Shopping</option>
-                            <option value="Entertainment">Entertainment</option>
-                            <option value="Bills & Utilities">Bills & Utilities</option>
-                            <option value="Healthcare">Healthcare</option>
-                            <option value="Travel">Travel</option>
-                            <option value="Groceries">Groceries</option>
-                            <option value="EMI Payment">EMI Payment</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="date">Date</label>
-                        <input type="date" id="date" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="creditCard">Credit Card</label>
-                        <select id="creditCard" required>
-                            <option value="">Select Credit Card</option>
-                        </select>
+                    <div class="expense-row">
+                        <div class="form-group">
+                            <label for="category">Category</label>
+                            <select id="category" required>
+                                <option value="">Select Category</option>
+                                <option value="Food & Dining">Food & Dining</option>
+                                <option value="Gas & Transport">Gas & Transport</option>
+                                <option value="Shopping">Shopping</option>
+                                <option value="Entertainment">Entertainment</option>
+                                <option value="Bills & Utilities">Bills & Utilities</option>
+                                <option value="Healthcare">Healthcare</option>
+                                <option value="Travel">Travel</option>
+                                <option value="Groceries">Groceries</option>
+                                <option value="EMI Payment">EMI Payment</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="creditCard">Credit Card</label>
+                            <select id="creditCard" required>
+                                <option value="">Select Card</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="merchant">Merchant</label>
                         <input type="text" id="merchant" placeholder="Store name" required>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="description">Description (Optional)</label>
-                    <textarea id="description" rows="2" placeholder="Additional details about the expense"></textarea>
+                    <div class="form-group">
+                        <label for="description">Description (Optional)</label>
+                        <textarea id="description" rows="2" placeholder="Additional details"></textarea>
+                    </div>
                 </div>
                 <button type="submit">Add Expense</button>
             </form>
@@ -497,27 +708,31 @@
         <div class="expense-list">
             <h2>📈 Expense History</h2>
             <div class="filters">
-                <select id="filterMonth">
-                    <option value="">All Months</option>
-                </select>
-                <select id="filterCategory">
-                    <option value="">All Categories</option>
-                    <option value="Food & Dining">Food & Dining</option>
-                    <option value="Gas & Transport">Gas & Transport</option>
-                    <option value="Shopping">Shopping</option>
-                    <option value="Entertainment">Entertainment</option>
-                    <option value="Bills & Utilities">Bills & Utilities</option>
-                    <option value="Healthcare">Healthcare</option>
-                    <option value="Travel">Travel</option>
-                    <option value="Groceries">Groceries</option>
-                    <option value="EMI Payment">EMI Payment</option>
-                    <option value="Other">Other</option>
-                </select>
+                <div class="filter-row">
+                    <select id="filterMonth">
+                        <option value="">All Months</option>
+                    </select>
+                    <select id="filterCategory">
+                        <option value="">All Categories</option>
+                        <option value="Food & Dining">Food & Dining</option>
+                        <option value="Gas & Transport">Gas & Transport</option>
+                        <option value="Shopping">Shopping</option>
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Bills & Utilities">Bills & Utilities</option>
+                        <option value="Healthcare">Healthcare</option>
+                        <option value="Travel">Travel</option>
+                        <option value="Groceries">Groceries</option>
+                        <option value="EMI Payment">EMI Payment</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
                 <select id="filterCard">
                     <option value="">All Cards</option>
                 </select>
-                <button onclick="exportData()" style="background: linear-gradient(135deg, #00b894, #00a085);">Export Data</button>
-                <button onclick="clearAllExpenses()" style="background: linear-gradient(135deg, #ff6b6b, #ee5a24);">Clear All</button>
+                <div class="button-row">
+                    <button onclick="exportData()" style="background: linear-gradient(135deg, #00b894, #00a085);">Export Data</button>
+                    <button onclick="clearAllExpenses()" style="background: linear-gradient(135deg, #ff6b6b, #ee5a24);">Clear All</button>
+                </div>
             </div>
             <div id="expensesList">
                 <div class="no-expenses">No expenses recorded yet. Add your first expense above!</div>
@@ -526,10 +741,10 @@
     </div>
 
     <script>
-        let expenses = JSON.parse(localStorage.getItem('creditCardExpenses')) || [];
-        let creditCards = JSON.parse(localStorage.getItem('creditCards')) || [];
-        let emis = JSON.parse(localStorage.getItem('creditCardEMIs')) || [];
-        let nextId = parseInt(localStorage.getItem('nextExpenseId')) || 1;
+        let expenses = [];
+        let creditCards = [];
+        let emis = [];
+        let nextId = 1;
 
         // Set today's date as default
         document.getElementById('date').valueAsDate = new Date();
@@ -554,7 +769,6 @@
                 nextId = parseInt(localStorage.getItem('nextExpenseId')) || 1;
             } catch (error) {
                 console.error('Error loading data:', error);
-                // Reset to defaults if data is corrupted
                 expenses = [];
                 creditCards = [];
                 emis = [];
@@ -606,7 +820,7 @@
             document.getElementById('date').valueAsDate = new Date();
             
             // Show success animation
-            showSuccessAnimation(document.querySelector('button[type="submit"]'), 'Expense Added!');
+            showSuccessAnimation(document.querySelector('button[type="submit"]'), 'Added!');
         });
 
         // Filter handlers
@@ -638,7 +852,7 @@
             displayCreditCards();
             
             document.getElementById('newCardName').value = '';
-            showSuccessAnimation(event.target, 'Card Added!');
+            showSuccessAnimation(event.target, 'Added!');
         }
 
         function removeCreditCard(cardId) {
@@ -647,7 +861,7 @@
             const hasEMIs = emis.some(e => e.creditCard === card.name);
             
             if (hasExpenses || hasEMIs) {
-                if (!confirm(`This card has ${hasExpenses ? 'expenses' : ''}${hasExpenses && hasEMIs ? ' and ' : ''}${hasEMIs ? 'EMIs' : ''} associated with it. Removing it will not delete them, but you won't be able to add new transactions to "${card.name}". Continue?`)) {
+                if (!confirm(`This card has ${hasExpenses ? 'expenses' : ''}${hasExpenses && hasEMIs ? ' and ' : ''}${hasEMIs ? 'EMIs' : ''}. Remove anyway?`)) {
                     return;
                 }
             }
@@ -703,11 +917,11 @@
             document.getElementById('emiTenure').value = '';
             document.getElementById('emiCard').value = '';
             
-            showSuccessAnimation(event.target, 'EMI Added!');
+            showSuccessAnimation(event.target, 'Added!');
         }
 
         function removeEMI(emiId) {
-            if (confirm('Are you sure you want to remove this EMI?')) {
+            if (confirm('Remove this EMI?')) {
                 emis = emis.filter(emi => emi.id !== emiId);
                 saveData();
                 displayEMIs();
@@ -719,349 +933,4 @@
             const emiList = document.getElementById('emiList');
             
             if (emis.length === 0) {
-                emiList.innerHTML = '<div style="color: #666; font-style: italic; padding: 10px;">No EMIs added yet.</div>';
-                return;
-            }
-            
-            const currentDate = new Date();
-            
-            emiList.innerHTML = emis.map(emi => {
-                const startDate = new Date(emi.startDate);
-                const endDate = new Date(startDate);
-                endDate.setMonth(endDate.getMonth() + emi.tenure);
-                
-                const totalMonths = emi.tenure;
-                const monthsPassed = Math.max(0, Math.min(totalMonths, 
-                    Math.floor((currentDate - startDate) / (1000 * 60 * 60 * 24 * 30.44)) + 1));
-                
-                const progressPercentage = (monthsPassed / totalMonths) * 100;
-                const isCompleted = progressPercentage >= 100;
-                const remainingMonths = Math.max(0, totalMonths - monthsPassed);
-                
-                return `
-                    <div class="emi-item">
-                        <div class="emi-header">
-                            <div>
-                                <span class="emi-amount">₹${formatNumber(emi.amount)}/month</span>
-                                <span class="emi-status ${isCompleted ? 'completed' : ''}">${isCompleted ? 'Completed' : 'Active'}</span>
-                            </div>
-                            <button class="delete-btn" onclick="removeEMI(${emi.id})">Remove</button>
-                        </div>
-                        <div class="emi-details">
-                            <strong>${emi.description}</strong> - ${emi.creditCard}
-                            ${!isCompleted ? `<br><small>₹${formatNumber(remainingMonths * emi.amount)} remaining (${remainingMonths} months)</small>` : ''}
-                        </div>
-                        <div class="emi-progress">
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: ${Math.min(100, progressPercentage)}%"></div>
-                            </div>
-                            <div class="progress-text">
-                                ${monthsPassed} of ${totalMonths} months completed 
-                                (${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()})
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function displayCreditCards() {
-            const cardsList = document.getElementById('cardsList');
-            
-            if (creditCards.length === 0) {
-                cardsList.innerHTML = '<div style="color: #666; font-style: italic; padding: 10px;">No credit cards added yet. Add your first card above!</div>';
-                return;
-            }
-            
-            cardsList.innerHTML = creditCards.map(card => {
-                const cardExpenses = expenses.filter(e => e.creditCard === card.name);
-                const cardTotal = cardExpenses.reduce((sum, e) => sum + e.amount, 0);
-                const cardEMIs = emis.filter(e => e.creditCard === card.name && isEMIActive(e));
-                const monthlyEMITotal = cardEMIs.reduce((sum, e) => sum + e.amount, 0);
-                
-                return `
-                    <div class="card-item">
-                        <div>
-                            <div class="card-name">${card.name}</div>
-                            <div style="font-size: 0.8em; color: #666;">
-                                Expenses: ₹${formatNumber(cardTotal)} | Monthly EMI: ₹${formatNumber(monthlyEMITotal)}
-                            </div>
-                        </div>
-                        <button class="delete-btn" onclick="removeCreditCard(${card.id})">Remove</button>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function populateCreditCardDropdowns() {
-            const creditCardSelect = document.getElementById('creditCard');
-            const filterCardSelect = document.getElementById('filterCard');
-            const emiCardSelect = document.getElementById('emiCard');
-            
-            // Clear existing options
-            creditCardSelect.innerHTML = '<option value="">Select Credit Card</option>';
-            filterCardSelect.innerHTML = '<option value="">All Cards</option>';
-            emiCardSelect.innerHTML = '<option value="">Select Credit Card</option>';
-            
-            creditCards.forEach(card => {
-                [creditCardSelect, emiCardSelect].forEach(select => {
-                    const option = document.createElement('option');
-                    option.value = card.name;
-                    option.textContent = card.name;
-                    select.appendChild(option);
-                });
-                
-                const filterOption = document.createElement('option');
-                filterOption.value = card.name;
-                filterOption.textContent = card.name;
-                filterCardSelect.appendChild(filterOption);
-            });
-        }
-
-        function populateMonthFilter() {
-            const monthFilter = document.getElementById('filterMonth');
-            const months = new Set();
-            
-            expenses.forEach(expense => {
-                const date = new Date(expense.date);
-                const monthYear = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-                months.add(monthYear);
-            });
-            
-            // Clear existing options (except "All Months")
-            monthFilter.innerHTML = '<option value="">All Months</option>';
-            
-            // Sort months in descending order
-            const sortedMonths = Array.from(months).sort().reverse();
-            
-            sortedMonths.forEach(month => {
-                const [year, monthNum] = month.split('-');
-                const date = new Date(year, monthNum - 1);
-                const monthName = date.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
-                
-                const option = document.createElement('option');
-                option.value = month;
-                option.textContent = monthName;
-                monthFilter.appendChild(option);
-            });
-        }
-
-        function displayExpenses() {
-            const monthFilter = document.getElementById('filterMonth').value;
-            const categoryFilter = document.getElementById('filterCategory').value;
-            const cardFilter = document.getElementById('filterCard').value;
-            const expensesList = document.getElementById('expensesList');
-            
-            let filteredExpenses = expenses.filter(expense => {
-                let matchesMonth = true;
-                let matchesCategory = true;
-                let matchesCard = true;
-                
-                if (monthFilter) {
-                    const expenseMonth = expense.date.substring(0, 7);
-                    matchesMonth = expenseMonth === monthFilter;
-                }
-                
-                if (categoryFilter) {
-                    matchesCategory = expense.category === categoryFilter;
-                }
-                
-                if (cardFilter) {
-                    matchesCard = expense.creditCard === cardFilter;
-                }
-                
-                return matchesMonth && matchesCategory && matchesCard;
-            });
-            
-            if (filteredExpenses.length === 0) {
-                expensesList.innerHTML = '<div class="no-expenses">No expenses found for the selected filters.</div>';
-                return;
-            }
-            
-            expensesList.innerHTML = filteredExpenses.map(expense => `
-                <div class="expense-item" onclick="editExpense(${expense.id})">
-                    <div class="expense-header">
-                        <div>
-                            <span class="expense-amount">-₹${formatNumber(expense.amount)}</span>
-                            <span class="expense-category">${expense.category}</span>
-                            <span class="expense-card">${expense.creditCard}</span>
-                        </div>
-                        <div>
-                            <button class="delete-btn" onclick="event.stopPropagation(); deleteExpense(${expense.id})">Delete</button>
-                        </div>
-                    </div>
-                    <div class="expense-details">
-                        <strong>${expense.merchant}</strong>
-                        ${expense.description ? ' - ' + expense.description : ''}
-                    </div>
-                    <div class="expense-date">${new Date(expense.date).toLocaleDateString('en-US', { 
-                        weekday: 'short', 
-                        year: 'numeric', 
-                        month: 'short', 
-                        day: 'numeric' 
-                    })}</div>
-                </div>
-            `).join('');
-            
-            populateMonthFilter();
-        }
-
-        function updateStats() {
-            const currentDate = new Date();
-            const currentMonth = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
-            
-            const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
-            const monthlyExpenses = expenses
-                .filter(expense => expense.date.substring(0, 7) === currentMonth)
-                .reduce((sum, expense) => sum + expense.amount, 0);
-            
-            // Calculate active EMIs for current month
-            const monthlyEMI = emis
-                .filter(emi => isEMIActive(emi))
-                .reduce((sum, emi) => sum + emi.amount, 0);
-            
-            document.getElementById('totalExpenses').textContent = `₹${formatNumber(totalExpenses)}`;
-            document.getElementById('monthlyExpenses').textContent = `₹${formatNumber(monthlyExpenses)}`;
-            document.getElementById('monthlyEMI').textContent = `₹${formatNumber(monthlyEMI)}`;
-            document.getElementById('expenseCount').textContent = expenses.length;
-        }
-
-        function isEMIActive(emi) {
-            const currentDate = new Date();
-            const startDate = new Date(emi.startDate);
-            const endDate = new Date(startDate);
-            endDate.setMonth(endDate.getMonth() + emi.tenure);
-            
-            return currentDate >= startDate && currentDate <= endDate;
-        }
-
-        function formatNumber(num) {
-            return new Intl.NumberFormat('en-IN', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            }).format(num);
-        }
-
-        function showSuccessAnimation(button, message) {
-            const originalText = button.textContent;
-            button.textContent = '✓ ' + message;
-            button.style.background = 'linear-gradient(135deg, #00b894, #00a085)';
-            setTimeout(() => {
-                button.textContent = originalText;
-                button.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
-            }, 1500);
-        }
-
-        function deleteExpense(id) {
-            if (confirm('Are you sure you want to delete this expense?')) {
-                expenses = expenses.filter(expense => expense.id !== id);
-                saveData();
-                displayExpenses();
-                updateStats();
-                displayCreditCards();
-            }
-        }
-
-        function editExpense(id) {
-            const expense = expenses.find(e => e.id === id);
-            if (!expense) return;
-            
-            document.getElementById('amount').value = expense.amount;
-            document.getElementById('category').value = expense.category;
-            document.getElementById('date').value = expense.date;
-            document.getElementById('creditCard').value = expense.creditCard;
-            document.getElementById('merchant').value = expense.merchant;
-            document.getElementById('description').value = expense.description;
-            
-            // Remove the expense so it can be re-added with updates
-            expenses = expenses.filter(e => e.id !== id);
-            saveData();
-            displayExpenses();
-            updateStats();
-            displayCreditCards();
-            
-            // Scroll to form
-            document.querySelector('#expenseForm').scrollIntoView({ behavior: 'smooth' });
-        }
-
-        function clearAllExpenses() {
-            if (confirm('Are you sure you want to delete all expenses? This action cannot be undone.')) {
-                expenses = [];
-                nextId = 1;
-                saveData();
-                displayExpenses();
-                updateStats();
-                displayCreditCards();
-            }
-        }
-
-        function exportData() {
-            const data = {
-                expenses: expenses,
-                creditCards: creditCards,
-                emis: emis,
-                exportDate: new Date().toISOString()
-            };
-            
-            const dataStr = JSON.stringify(data, null, 2);
-            const dataBlob = new Blob([dataStr], {type: 'application/json'});
-            const url = URL.createObjectURL(dataBlob);
-            
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `credit-card-data-${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-        }
-
-        // Keyboard shortcuts
-        document.addEventListener('keydown', function(e) {
-            if (e.ctrlKey || e.metaKey) {
-                switch(e.key) {
-                    case 'n':
-                        e.preventDefault();
-                        document.getElementById('amount').focus();
-                        break;
-                    case 'e':
-                        e.preventDefault();
-                        exportData();
-                        break;
-                }
-            }
-        });
-
-        // Auto-save functionality
-        let autoSaveTimeout;
-        function scheduleAutoSave() {
-            clearTimeout(autoSaveTimeout);
-            autoSaveTimeout = setTimeout(saveData, 1000);
-        }
-
-        // Add input validation
-        document.getElementById('amount').addEventListener('input', function() {
-            const value = parseFloat(this.value);
-            if (value < 0) {
-                this.value = 0;
-            }
-        });
-
-        document.getElementById('emiAmount').addEventListener('input', function() {
-            const value = parseFloat(this.value);
-            if (value < 0) {
-                this.value = 0;
-            }
-        });
-
-        document.getElementById('emiTenure').addEventListener('input', function() {
-            const value = parseInt(this.value);
-            if (value < 1) {
-                this.value = 1;
-            } else if (value > 600) {
-                this.value = 600;
-            }
-        });
-    </script>
-</body>
-</html>
+                emiList.innerHTML = '<div style
