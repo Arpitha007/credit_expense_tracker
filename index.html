@@ -354,15 +354,15 @@
         
         <div class="dashboard">
             <div class="stat-card">
-                <div class="stat-value" id="totalExpenses">₹0.00</div>
+                <div class="stat-value" id="totalExpenses">$0.00</div>
                 <div class="stat-label">Total Expenses</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value" id="monthlyExpenses">₹0.00</div>
+                <div class="stat-value" id="monthlyExpenses">$0.00</div>
                 <div class="stat-label">This Month</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value" id="monthlyEMI">₹0.00</div>
+                <div class="stat-value" id="monthlyEMI">$0.00</div>
                 <div class="stat-label">Monthly EMIs</div>
             </div>
             <div class="stat-card">
@@ -393,7 +393,7 @@
                     <input type="text" id="emiDescription" placeholder="e.g., iPhone 15, Car Loan, Home Loan">
                 </div>
                 <div class="form-group">
-                    <label for="emiAmount">Monthly EMI Amount (₹)</label>
+                    <label for="emiAmount">Monthly EMI Amount ($)</label>
                     <input type="number" id="emiAmount" step="0.01" placeholder="Monthly installment amount">
                 </div>
                 <div class="form-group">
@@ -422,7 +422,7 @@
             <form id="expenseForm">
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="amount">Amount (₹)</label>
+                        <label for="amount">Amount ($)</label>
                         <input type="number" id="amount" step="0.01" required>
                     </div>
                     <div class="form-group">
@@ -593,7 +593,7 @@
             const hasEMIs = emis.some(e => e.creditCard === card.name);
             
             if (hasExpenses || hasEMIs) {
-                if (!confirm(`This card has expenses or EMIs associated with it. Removing it will not delete them, but you won't be able to add new transactions to "₹{card.name}". Continue?`)) {
+                if (!confirm(`This card has expenses or EMIs associated with it. Removing it will not delete them, but you won't be able to add new transactions to "${card.name}". Continue?`)) {
                     return;
                 }
             }
@@ -683,21 +683,21 @@
                     <div class="emi-item">
                         <div class="emi-header">
                             <div>
-                                <span class="emi-amount">₹₹{emi.amount.toFixed(2)}/month</span>
-                                <span class="emi-status ₹{isCompleted ? 'completed' : ''}">₹{isCompleted ? 'Completed' : 'Active'}</span>
+                                <span class="emi-amount">$${emi.amount.toFixed(2)}/month</span>
+                                <span class="emi-status ${isCompleted ? 'completed' : ''}">${isCompleted ? 'Completed' : 'Active'}</span>
                             </div>
-                            <button class="delete-btn" onclick="removeEMI(₹{emi.id})">Remove</button>
+                            <button class="delete-btn" onclick="removeEMI(${emi.id})">Remove</button>
                         </div>
                         <div class="emi-details">
-                            <strong>₹{emi.description}</strong> - ₹{emi.creditCard}
+                            <strong>${emi.description}</strong> - ${emi.creditCard}
                         </div>
                         <div class="emi-progress">
                             <div class="progress-bar">
-                                <div class="progress-fill" style="width: ₹{Math.min(100, progressPercentage)}%"></div>
+                                <div class="progress-fill" style="width: ${Math.min(100, progressPercentage)}%"></div>
                             </div>
                             <div class="progress-text">
-                                ₹{monthsPassed} of ₹{totalMonths} months completed 
-                                (₹{startDate.toLocaleDateString()} - ₹{endDate.toLocaleDateString()})
+                                ${monthsPassed} of ${totalMonths} months completed 
+                                (${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()})
                             </div>
                         </div>
                     </div>
@@ -720,10 +720,10 @@
                 return `
                     <div class="card-item">
                         <div>
-                            <span class="card-name">₹{card.name}</span>
-                            <span class="card-total">(-₹₹{cardTotal.toFixed(2)})</span>
+                            <span class="card-name">${card.name}</span>
+                            <span class="card-total">(-$${cardTotal.toFixed(2)})</span>
                         </div>
-                        <button class="delete-btn" onclick="removeCreditCard(₹{card.id})">Remove</button>
+                        <button class="delete-btn" onclick="removeCreditCard(${card.id})">Remove</button>
                     </div>
                 `;
             }).join('');
@@ -763,7 +763,7 @@
             
             expenses.forEach(expense => {
                 const date = new Date(expense.date);
-                const monthYear = `₹{date.getFullYear()}-₹{String(date.getMonth() + 1).padStart(2, '0')}`;
+                const monthYear = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
                 months.add(monthYear);
             });
             
@@ -818,22 +818,22 @@
             }
             
             expensesList.innerHTML = filteredExpenses.map(expense => `
-                <div class="expense-item" onclick="editExpense(₹{expense.id})">
+                <div class="expense-item" onclick="editExpense(${expense.id})">
                     <div class="expense-header">
                         <div>
-                            <span class="expense-amount">-₹₹{expense.amount.toFixed(2)}</span>
-                            <span class="expense-category">₹{expense.category}</span>
-                            <span class="expense-card">₹{expense.creditCard}</span>
+                            <span class="expense-amount">-$${expense.amount.toFixed(2)}</span>
+                            <span class="expense-category">${expense.category}</span>
+                            <span class="expense-card">${expense.creditCard}</span>
                         </div>
                         <div>
-                            <button class="delete-btn" onclick="event.stopPropagation(); deleteExpense(₹{expense.id})">Delete</button>
+                            <button class="delete-btn" onclick="event.stopPropagation(); deleteExpense(${expense.id})">Delete</button>
                         </div>
                     </div>
                     <div class="expense-details">
-                        <strong>₹{expense.merchant}</strong>
-                        ₹{expense.description ? ' - ' + expense.description : ''}
+                        <strong>${expense.merchant}</strong>
+                        ${expense.description ? ' - ' + expense.description : ''}
                     </div>
-                    <div class="expense-date">₹{new Date(expense.date).toLocaleDateString('en-US', { 
+                    <div class="expense-date">${new Date(expense.date).toLocaleDateString('en-US', { 
                         weekday: 'short', 
                         year: 'numeric', 
                         month: 'short', 
@@ -847,7 +847,7 @@
 
         function updateStats() {
             const currentDate = new Date();
-            const currentMonth = `₹{currentDate.getFullYear()}-₹{String(currentDate.getMonth() + 1).padStart(2, '0')}`;
+            const currentMonth = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`;
             
             const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
             const monthlyExpenses = expenses
@@ -864,9 +864,9 @@
                 })
                 .reduce((sum, emi) => sum + emi.amount, 0);
             
-            document.getElementById('totalExpenses').textContent = `₹{totalExpenses.toFixed(2)}`;
-            document.getElementById('monthlyExpenses').textContent = `₹{monthlyExpenses.toFixed(2)}`;
-            document.getElementById('monthlyEMI').textContent = `₹{monthlyEMI.toFixed(2)}`;
+            document.getElementById('totalExpenses').textContent = `${totalExpenses.toFixed(2)}`;
+            document.getElementById('monthlyExpenses').textContent = `${monthlyExpenses.toFixed(2)}`;
+            document.getElementById('monthlyEMI').textContent = `${monthlyEMI.toFixed(2)}`;
             document.getElementById('expenseCount').textContent = expenses.length;
         }
 
