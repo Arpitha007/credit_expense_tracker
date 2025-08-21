@@ -41,7 +41,7 @@
 
         .dashboard {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
             gap: 20px;
             margin-bottom: 30px;
         }
@@ -244,6 +244,11 @@
             padding: 40px;
         }
 
+        .stat-card:nth-child(4) {
+            background: linear-gradient(135deg, #a29bfe, #6c5ce7);
+            box-shadow: 0 10px 25px rgba(162, 155, 254, 0.3);
+        }
+
         .expense-card {
             background: #74b9ff;
             color: white;
@@ -254,9 +259,86 @@
             margin-left: 10px;
         }
 
+        .emi-section {
+            background: rgba(162, 155, 254, 0.1);
+            border: 2px solid #a29bfe;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .emi-item {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid #a29bfe;
+            transition: all 0.3s ease;
+        }
+
+        .emi-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .emi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .emi-amount {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #a29bfe;
+        }
+
+        .emi-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .emi-active {
+            background: #00b894;
+            color: white;
+        }
+
+        .emi-completed {
+            background: #636e72;
+            color: white;
+        }
+
+        .emi-overdue {
+            background: #e17055;
+            color: white;
+        }
+
+        .emi-details {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+
+        .emi-progress {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .emi-progress-bar {
+            background: linear-gradient(90deg, #a29bfe, #6c5ce7);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
         @media (max-width: 768px) {
             .dashboard {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr 1fr;
             }
             
             .form-grid {
@@ -268,6 +350,12 @@
             }
             
             .expense-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .emi-header {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 10px;
@@ -289,8 +377,12 @@
                 <div class="stat-label">This Month</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value" id="expenseCount">0</div>
-                <div class="stat-label">Total Transactions</div>
+                <div class="stat-value" id="activeEmis">0</div>
+                <div class="stat-label">Active EMIs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="monthlyEmiDue">$0.00</div>
+                <div class="stat-label">EMI Due This Month</div>
             </div>
         </div>
 
@@ -313,7 +405,7 @@
             <form id="expenseForm">
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="amount">Amount ($)</label>
+                        <label for="amount">Amount (₹)</label>
                         <input type="number" id="amount" step="0.01" required>
                     </div>
                     <div class="form-group">
@@ -381,12 +473,62 @@
                 <div class="no-expenses">No expenses recorded yet. Add your first expense above!</div>
             </div>
         </div>
+
+        <div class="expense-list">
+            <h2>EMI Management</h2>
+            <div class="emi-section">
+                <h3>Convert Expense to EMI</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="emiExpenseSelect">Select Expense to Convert</label>
+                        <select id="emiExpenseSelect">
+                            <option value="">Choose an expense</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="emiTenure">EMI Tenure (months)</label>
+                        <select id="emiTenure" required>
+                            <option value="">Select tenure</option>
+                            <option value="3">3 months</option>
+                            <option value="6">6 months</option>
+                            <option value="9">9 months</option>
+                            <option value="12">12 months</option>
+                            <option value="18">18 months</option>
+                            <option value="24">24 months</option>
+                            <option value="36">36 months</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="emiInterestRate">Interest Rate (% per annum)</label>
+                        <input type="number" id="emiInterestRate" step="0.01" placeholder="e.g., 12.5" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="emiStartDate">EMI Start Date</label>
+                        <input type="date" id="emiStartDate" required>
+                    </div>
+                </div>
+                <div style="margin-top: 15px;">
+                    <div id="emiCalculation" style="background: rgba(255,255,255,0.8); padding: 15px; border-radius: 10px; margin-bottom: 15px; display: none;">
+                        <strong>EMI Calculation:</strong>
+                        <div>Monthly EMI: <span id="monthlyEmiAmount">$0.00</span></div>
+                        <div>Total Amount: <span id="totalEmiAmount">$0.00</span></div>
+                        <div>Total Interest: <span id="totalInterest">$0.00</span></div>
+                    </div>
+                    <button type="button" onclick="calculateEMI()">Calculate EMI</button>
+                    <button type="button" onclick="convertToEMI()" style="margin-left: 10px;">Convert to EMI</button>
+                </div>
+            </div>
+            
+            <div id="emiList"></div>
+        </div>
     </div>
 
     <script>
         let expenses = JSON.parse(localStorage.getItem('creditCardExpenses')) || [];
         let creditCards = JSON.parse(localStorage.getItem('creditCards')) || [];
+        let emis = JSON.parse(localStorage.getItem('creditCardEmis')) || [];
         let nextId = parseInt(localStorage.getItem('nextExpenseId')) || 1;
+        let nextEmiId = parseInt(localStorage.getItem('nextEmiId')) || 1;
 
         // Set today's date as default
         document.getElementById('date').valueAsDate = new Date();
@@ -395,9 +537,17 @@
         document.addEventListener('DOMContentLoaded', function() {
             populateMonthFilter();
             populateCreditCardDropdowns();
+            populateEmiExpenseDropdown();
             displayCreditCards();
             displayExpenses();
+            displayEmis();
             updateStats();
+            
+            // Set default EMI start date to next month
+            const nextMonth = new Date();
+            nextMonth.setMonth(nextMonth.getMonth() + 1);
+            nextMonth.setDate(1);
+            document.getElementById('emiStartDate').valueAsDate = nextMonth;
         });
 
         // Add expense form handler
@@ -420,6 +570,7 @@
             displayExpenses();
             updateStats();
             displayCreditCards();
+            populateEmiExpenseDropdown();
             
             // Reset form
             this.reset();
@@ -541,7 +692,9 @@
         function saveData() {
             localStorage.setItem('creditCardExpenses', JSON.stringify(expenses));
             localStorage.setItem('creditCards', JSON.stringify(creditCards));
+            localStorage.setItem('creditCardEmis', JSON.stringify(emis));
             localStorage.setItem('nextExpenseId', nextId.toString());
+            localStorage.setItem('nextEmiId', nextEmiId.toString());
         }
 
         function populateMonthFilter() {
@@ -575,11 +728,13 @@
         function displayExpenses() {
             const monthFilter = document.getElementById('filterMonth').value;
             const categoryFilter = document.getElementById('filterCategory').value;
+            const cardFilter = document.getElementById('filterCard').value;
             const expensesList = document.getElementById('expensesList');
             
             let filteredExpenses = expenses.filter(expense => {
                 let matchesMonth = true;
                 let matchesCategory = true;
+                let matchesCard = true;
                 
                 if (monthFilter) {
                     const expenseMonth = expense.date.substring(0, 7);
@@ -590,7 +745,11 @@
                     matchesCategory = expense.category === categoryFilter;
                 }
                 
-                return matchesMonth && matchesCategory;
+                if (cardFilter) {
+                    matchesCard = expense.creditCard === cardFilter;
+                }
+                
+                return matchesMonth && matchesCategory && matchesCard;
             });
             
             if (filteredExpenses.length === 0) {
@@ -602,8 +761,9 @@
                 <div class="expense-item" onclick="editExpense(${expense.id})">
                     <div class="expense-header">
                         <div>
-                            <span class="expense-amount">-$${expense.amount.toFixed(2)}</span>
+                            <span class="expense-amount">-${expense.amount.toFixed(2)}</span>
                             <span class="expense-category">${expense.category}</span>
+                            ${expense.creditCard ? `<span class="expense-card">${expense.creditCard}</span>` : ''}
                         </div>
                         <div>
                             <button class="delete-btn" onclick="event.stopPropagation(); deleteExpense(${expense.id})">Delete</button>
@@ -634,9 +794,15 @@
                 .filter(expense => expense.date.substring(0, 7) === currentMonth)
                 .reduce((sum, expense) => sum + expense.amount, 0);
             
-            document.getElementById('totalExpenses').textContent = `$${totalExpenses.toFixed(2)}`;
-            document.getElementById('monthlyExpenses').textContent = `$${monthlyExpenses.toFixed(2)}`;
-            document.getElementById('expenseCount').textContent = expenses.length;
+            const activeEmisCount = emis.filter(emi => emi.status === 'active').length;
+            const monthlyEmiDue = emis
+                .filter(emi => emi.status === 'active')
+                .reduce((sum, emi) => sum + emi.monthlyAmount, 0);
+            
+            document.getElementById('totalExpenses').textContent = `${totalExpenses.toFixed(2)}`;
+            document.getElementById('monthlyExpenses').textContent = `${monthlyExpenses.toFixed(2)}`;
+            document.getElementById('activeEmis').textContent = activeEmisCount;
+            document.getElementById('monthlyEmiDue').textContent = `${monthlyEmiDue.toFixed(2)}`;
         }
 
         function deleteExpense(id) {
@@ -654,6 +820,7 @@
             
             document.getElementById('amount').value = expense.amount;
             document.getElementById('category').value = expense.category;
+            document.getElementById('creditCard').value = expense.creditCard || '';
             document.getElementById('date').value = expense.date;
             document.getElementById('merchant').value = expense.merchant;
             document.getElementById('description').value = expense.description;
@@ -663,9 +830,10 @@
             saveData();
             displayExpenses();
             updateStats();
+            displayCreditCards();
             
             // Scroll to form
-            document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
+            document.querySelector('.form-section:last-of-type').scrollIntoView({ behavior: 'smooth' });
         }
 
         function clearAllExpenses() {
@@ -675,6 +843,226 @@
                 saveData();
                 displayExpenses();
                 updateStats();
+                displayCreditCards();
+                populateEmiExpenseDropdown();
+            }
+        }
+
+        // EMI Functions
+        function populateEmiExpenseDropdown() {
+            const select = document.getElementById('emiExpenseSelect');
+            const eligibleExpenses = expenses.filter(expense => !expense.isEmi && expense.amount >= 100);
+            
+            select.innerHTML = '<option value="">Choose an expense</option>';
+            
+            eligibleExpenses.forEach(expense => {
+                const option = document.createElement('option');
+                option.value = expense.id;
+                option.textContent = `${expense.amount.toFixed(2)} - ${expense.merchant} (${expense.date})`;
+                select.appendChild(option);
+            });
+        }
+
+        function calculateEMI() {
+            const expenseId = document.getElementById('emiExpenseSelect').value;
+            const tenure = parseInt(document.getElementById('emiTenure').value);
+            const interestRate = parseFloat(document.getElementById('emiInterestRate').value);
+            
+            if (!expenseId || !tenure || !interestRate) {
+                alert('Please fill all EMI details');
+                return;
+            }
+            
+            const expense = expenses.find(e => e.id == expenseId);
+            if (!expense) return;
+            
+            const principal = expense.amount;
+            const monthlyRate = interestRate / (12 * 100);
+            
+            // EMI calculation formula
+            const emi = principal * monthlyRate * Math.pow(1 + monthlyRate, tenure) / 
+                       (Math.pow(1 + monthlyRate, tenure) - 1);
+            
+            const totalAmount = emi * tenure;
+            const totalInterest = totalAmount - principal;
+            
+            document.getElementById('monthlyEmiAmount').textContent = `${emi.toFixed(2)}`;
+            document.getElementById('totalEmiAmount').textContent = `${totalAmount.toFixed(2)}`;
+            document.getElementById('totalInterest').textContent = `${totalInterest.toFixed(2)}`;
+            document.getElementById('emiCalculation').style.display = 'block';
+        }
+
+        function convertToEMI() {
+            const expenseId = document.getElementById('emiExpenseSelect').value;
+            const tenure = parseInt(document.getElementById('emiTenure').value);
+            const interestRate = parseFloat(document.getElementById('emiInterestRate').value);
+            const startDate = document.getElementById('emiStartDate').value;
+            
+            if (!expenseId || !tenure || !interestRate || !startDate) {
+                alert('Please fill all EMI details and calculate EMI first');
+                return;
+            }
+            
+            const expense = expenses.find(e => e.id == expenseId);
+            if (!expense) return;
+            
+            const principal = expense.amount;
+            const monthlyRate = interestRate / (12 * 100);
+            const emi = principal * monthlyRate * Math.pow(1 + monthlyRate, tenure) / 
+                       (Math.pow(1 + monthlyRate, tenure) - 1);
+            
+            // Create EMI record
+            const emiRecord = {
+                id: nextEmiId++,
+                expenseId: expense.id,
+                originalExpense: {...expense},
+                principal: principal,
+                tenure: tenure,
+                interestRate: interestRate,
+                monthlyAmount: emi,
+                totalAmount: emi * tenure,
+                totalInterest: (emi * tenure) - principal,
+                startDate: startDate,
+                paidInstallments: 0,
+                status: 'active',
+                nextDueDate: getNextEmiDate(startDate, 0),
+                createdAt: new Date().toISOString()
+            };
+            
+            // Mark original expense as EMI
+            expense.isEmi = true;
+            expense.emiId = emiRecord.id;
+            
+            emis.push(emiRecord);
+            saveData();
+            
+            // Reset form
+            document.getElementById('emiExpenseSelect').value = '';
+            document.getElementById('emiTenure').value = '';
+            document.getElementById('emiInterestRate').value = '';
+            document.getElementById('emiCalculation').style.display = 'none';
+            
+            populateEmiExpenseDropdown();
+            displayExpenses();
+            displayEmis();
+            updateStats();
+            
+            alert(`EMI created successfully! Monthly payment: ${emi.toFixed(2)}`);
+        }
+
+        function getNextEmiDate(startDate, installmentNumber) {
+            const date = new Date(startDate);
+            date.setMonth(date.getMonth() + installmentNumber);
+            return date.toISOString().split('T')[0];
+        }
+
+        function displayEmis() {
+            const emiList = document.getElementById('emiList');
+            
+            if (emis.length === 0) {
+                emiList.innerHTML = '<div class="no-expenses">No EMIs created yet.</div>';
+                return;
+            }
+            
+            const currentDate = new Date().toISOString().split('T')[0];
+            
+            emiList.innerHTML = `
+                <h3 style="margin: 20px 0 15px 0; color: #333;">Active EMIs</h3>
+                ${emis.map(emi => {
+                    const progress = (emi.paidInstallments / emi.tenure) * 100;
+                    const remainingAmount = (emi.tenure - emi.paidInstallments) * emi.monthlyAmount;
+                    
+                    let statusClass = 'emi-active';
+                    let statusText = 'Active';
+                    
+                    if (emi.paidInstallments >= emi.tenure) {
+                        statusClass = 'emi-completed';
+                        statusText = 'Completed';
+                        emi.status = 'completed';
+                    } else if (emi.nextDueDate < currentDate) {
+                        statusClass = 'emi-overdue';
+                        statusText = 'Overdue';
+                    }
+                    
+                    return `
+                        <div class="emi-item">
+                            <div class="emi-header">
+                                <div>
+                                    <span class="emi-amount">${emi.monthlyAmount.toFixed(2)}/month</span>
+                                    <span class="emi-status ${statusClass}">${statusText}</span>
+                                </div>
+                                <div>
+                                    ${emi.status === 'active' ? `<button class="delete-btn" onclick="payEmiInstallment(${emi.id})" style="background: linear-gradient(135deg, #00b894, #00a085);">Pay EMI</button>` : ''}
+                                    <button class="delete-btn" onclick="deleteEmi(${emi.id})">Delete</button>
+                                </div>
+                            </div>
+                            <div class="emi-details">
+                                <strong>${emi.originalExpense.merchant}</strong> - ${emi.originalExpense.creditCard}
+                                <br>Next Due: ${new Date(emi.nextDueDate).toLocaleDateString('en-US', { 
+                                    year: 'numeric', 
+                                    month: 'short', 
+                                    day: 'numeric' 
+                                })}
+                                <br>Remaining: ${remainingAmount.toFixed(2)} (${emi.tenure - emi.paidInstallments} payments)
+                            </div>
+                            <div class="emi-progress">
+                                <div class="emi-progress-bar" style="width: ${progress}%"></div>
+                            </div>
+                            <div style="font-size: 0.8em; color: #999;">
+                                ${emi.paidInstallments}/${emi.tenure} installments paid (${progress.toFixed(1)}%)
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            `;
+            
+            saveData(); // Save any status updates
+        }
+
+        function payEmiInstallment(emiId) {
+            const emi = emis.find(e => e.id === emiId);
+            if (!emi || emi.status !== 'active') return;
+            
+            if (confirm(`Pay EMI installment of ${emi.monthlyAmount.toFixed(2)}?`)) {
+                emi.paidInstallments++;
+                emi.nextDueDate = getNextEmiDate(emi.startDate, emi.paidInstallments);
+                
+                if (emi.paidInstallments >= emi.tenure) {
+                    emi.status = 'completed';
+                }
+                
+                saveData();
+                displayEmis();
+                updateStats();
+                
+                alert('EMI payment recorded successfully!');
+            }
+        }
+
+        function deleteEmi(emiId) {
+            const emi = emis.find(e => e.id === emiId);
+            if (!emi) return;
+            
+            if (confirm('Are you sure you want to delete this EMI? This will also remove the EMI tag from the original expense.')) {
+                // Remove EMI tag from original expense
+                const originalExpense = expenses.find(e => e.id === emi.expenseId);
+                if (originalExpense) {
+                    delete originalExpense.isEmi;
+                    delete originalExpense.emiId;
+                }
+                
+                emis = emis.filter(e => e.id !== emiId);
+                saveData();
+                
+                populateEmiExpenseDropdown();
+                displayExpenses();
+                displayEmis();
+                updateStats();
+            }
+        }();
+                displayExpenses();
+                updateStats();
+                displayCreditCards();
             }
         }
     </script>
