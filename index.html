@@ -41,7 +41,7 @@
 
         .dashboard {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 12px;
             margin-bottom: 20px;
         }
@@ -80,7 +80,6 @@
             font-size: 1.4em;
             font-weight: bold;
             margin-bottom: 5px;
-            word-break: break-all;
         }
 
         .stat-label {
@@ -103,16 +102,10 @@
             font-size: 1.3em;
         }
 
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-            margin-bottom: 15px;
-        }
-
         .form-group {
             display: flex;
             flex-direction: column;
+            margin-bottom: 15px;
         }
 
         label {
@@ -149,7 +142,6 @@
             font-weight: 600;
             transition: all 0.3s ease;
             box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-            width: 100%;
             margin-top: 5px;
         }
 
@@ -158,9 +150,108 @@
             box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
         }
 
+        .expense-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .card-input-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 10px;
+            align-items: end;
+        }
+
+        .emi-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .small-btn {
+            padding: 8px 12px;
+            font-size: 0.75em;
+            width: auto;
+        }
+
+        .expense-list {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .expense-item, .card-item, .emi-item {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .expense-item:hover, .card-item:hover, .emi-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .expense-header, .card-header, .emi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .expense-amount {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+
+        .emi-amount {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #00b894;
+        }
+
+        .delete-btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            padding: 6px 12px;
+            font-size: 0.75em;
+            margin: 0;
+            width: auto;
+        }
+
+        .expense-category, .expense-card {
+            background: #667eea;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 15px;
+            font-size: 0.7em;
+            font-weight: 600;
+            margin: 2px;
+            display: inline-block;
+        }
+
+        .expense-details, .emi-details {
+            color: #666;
+            font-size: 0.85em;
+            line-height: 1.3;
+            margin-top: 5px;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 30px 15px;
+            font-size: 0.9em;
+        }
+
         .filters {
             display: grid;
-            grid-template-columns: 1fr;
             gap: 10px;
             margin-bottom: 15px;
         }
@@ -177,174 +268,12 @@
             gap: 10px;
         }
 
-        .expense-list {
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 12px;
-            padding: 15px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        .expense-item {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            border-left: 4px solid #667eea;
-            transition: all 0.3s ease;
-        }
-
-        .expense-item:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .expense-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 8px;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .expense-amount {
-            font-size: 1.1em;
-            font-weight: bold;
-            color: #e74c3c;
-        }
-
-        .expense-category {
-            background: #667eea;
-            color: white;
-            padding: 3px 8px;
-            border-radius: 15px;
-            font-size: 0.7em;
-            font-weight: 600;
-            margin: 2px;
-            display: inline-block;
-        }
-
-        .expense-details {
-            color: #666;
-            font-size: 0.85em;
-            line-height: 1.3;
-        }
-
-        .expense-date {
-            color: #999;
-            font-size: 0.75em;
-            margin-top: 5px;
-        }
-
-        .delete-btn {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-            padding: 6px 12px;
-            font-size: 0.75em;
-            margin: 0;
-            width: auto;
-            flex-shrink: 0;
-        }
-
-        .card-item {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            border-left: 4px solid #74b9ff;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .card-name {
-            font-weight: 600;
-            color: #333;
-            font-size: 0.9em;
-        }
-
-        .card-details {
-            font-size: 0.75em;
-            color: #666;
-            margin-top: 3px;
-        }
-
-        .no-expenses {
-            text-align: center;
-            color: #666;
-            font-style: italic;
-            padding: 30px 15px;
-            font-size: 0.9em;
-        }
-
-        .expense-card {
-            background: #74b9ff;
-            color: white;
-            padding: 3px 8px;
-            border-radius: 15px;
-            font-size: 0.7em;
-            font-weight: 600;
-            margin: 2px;
-            display: inline-block;
-        }
-
-        .emi-item {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            border-left: 4px solid #00b894;
-            transition: all 0.3s ease;
-        }
-
-        .emi-item:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .emi-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 8px;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .emi-amount {
-            font-size: 1.1em;
-            font-weight: bold;
-            color: #00b894;
-        }
-
-        .emi-status {
-            background: #00b894;
-            color: white;
-            padding: 3px 8px;
-            border-radius: 15px;
-            font-size: 0.7em;
-            font-weight: 600;
-            margin-left: 5px;
-        }
-
-        .emi-status.completed {
-            background: #636e72;
-        }
-
-        .emi-details {
-            color: #666;
-            font-size: 0.85em;
-            line-height: 1.3;
-        }
-
-        .emi-progress {
-            margin-top: 8px;
-        }
-
         .progress-bar {
             background: #e0e0e0;
             height: 6px;
             border-radius: 3px;
             overflow: hidden;
+            margin-top: 5px;
         }
 
         .progress-fill {
@@ -353,233 +282,18 @@
             transition: width 0.3s ease;
         }
 
-        .progress-text {
-            font-size: 0.7em;
-            color: #666;
-            margin-top: 3px;
-            line-height: 1.2;
-        }
-
-        .success-message {
-            background: #00b894;
-            color: white;
-            padding: 8px;
-            border-radius: 5px;
-            margin: 8px 0;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            font-size: 0.9em;
-        }
-
-        .success-message.show {
-            opacity: 1;
-        }
-
-        /* Card management section optimizations */
-        .card-management {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 10px;
-        }
-
-        .card-input-row {
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: 10px;
-            align-items: end;
-        }
-
-        /* EMI form optimizations */
-        .emi-form-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-        }
-
-        .emi-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        /* Expense form optimizations */
-        .expense-form-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-        }
-
-        .expense-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        /* Tag-style display for categories and cards */
-        .tag-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            align-items: center;
-        }
-
-        /* Better mobile button sizing */
-        .small-btn {
-            padding: 8px 12px;
-            font-size: 0.75em;
-            min-width: auto;
-            width: auto;
-        }
-
-        /* Mobile-specific dashboard layout */
         @media (max-width: 600px) {
-            body {
-                padding: 5px;
-            }
-
-            .container {
-                padding: 12px;
-                border-radius: 12px;
-            }
-
-            h1 {
-                font-size: 1.6em;
-                margin-bottom: 15px;
-            }
-
-            .dashboard {
-                grid-template-columns: 1fr 1fr;
-                gap: 8px;
-                margin-bottom: 15px;
-            }
-
-            .stat-card {
-                padding: 12px 8px;
-            }
-
-            .stat-value {
-                font-size: 1.2em;
-            }
-
-            .stat-label {
-                font-size: 0.7em;
-            }
-
-            .form-section {
-                padding: 12px;
-                margin-bottom: 15px;
-            }
-
-            .form-section h2 {
-                font-size: 1.1em;
-                margin-bottom: 12px;
-            }
-
-            button {
-                padding: 10px 15px;
-                font-size: 13px;
-            }
-
-            .delete-btn {
-                padding: 4px 8px;
-                font-size: 0.7em;
-            }
-
-            .expense-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 5px;
-            }
-
-            .emi-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 5px;
-            }
-
-            .card-item {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 8px;
-            }
-
-            .expense-amount, .emi-amount {
-                font-size: 1em;
-            }
-
-            .expense-category, .expense-card, .emi-status {
-                font-size: 0.65em;
-                padding: 2px 6px;
-            }
-        }
-
-        /* Very small screens */
-        @media (max-width: 400px) {
-            .dashboard {
-                grid-template-columns: 1fr;
-                gap: 6px;
-            }
-
-            .stat-value {
-                font-size: 1.1em;
-            }
-
-            h1 {
-                font-size: 1.4em;
-            }
-
-            .container {
-                padding: 10px;
-            }
-
-            .form-section {
-                padding: 10px;
-            }
-
             .expense-row, .emi-row {
                 grid-template-columns: 1fr;
             }
-        }
-
-        /* Improve touch targets */
-        button, input, select, textarea {
-            min-height: 44px;
-        }
-
-        .delete-btn {
-            min-height: 36px;
-        }
-
-        /* Better text wrapping */
-        .expense-details, .emi-details, .card-details {
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-        }
-
-        /* Scrollable containers for long lists */
-        .expense-list, #cardsList, #emiList {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .expense-list::-webkit-scrollbar,
-        #cardsList::-webkit-scrollbar,
-        #emiList::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .expense-list::-webkit-scrollbar-track,
-        #cardsList::-webkit-scrollbar-track,
-        #emiList::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 3px;
-        }
-
-        .expense-list::-webkit-scrollbar-thumb,
-        #cardsList::-webkit-scrollbar-thumb,
-        #emiList::-webkit-scrollbar-thumb {
-            background: #667eea;
-            border-radius: 3px;
+            
+            .dashboard {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .filter-row, .button-row {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -608,98 +322,92 @@
 
         <div class="form-section">
             <h2>📱 Manage Credit Cards</h2>
-            <div class="card-management">
-                <div class="card-input-row">
-                    <div class="form-group">
-                        <label for="newCardName">Add New Credit Card</label>
-                        <input type="text" id="newCardName" placeholder="e.g., HDFC Regalia">
-                    </div>
-                    <button type="button" onclick="addCreditCard()" class="small-btn">Add</button>
+            <div class="card-input-row">
+                <div class="form-group">
+                    <label for="newCardName">Add New Credit Card</label>
+                    <input type="text" id="newCardName" placeholder="e.g., HDFC Regalia">
                 </div>
+                <button type="button" onclick="addCreditCard()" class="small-btn">Add</button>
             </div>
             <div id="cardsList"></div>
         </div>
 
         <div class="form-section">
             <h2>📊 Manage EMIs</h2>
-            <div class="emi-form-grid">
-                <div class="form-group">
-                    <label for="emiDescription">EMI Description</label>
-                    <input type="text" id="emiDescription" placeholder="e.g., iPhone 15, Car Loan">
-                </div>
-                <div class="emi-row">
-                    <div class="form-group">
-                        <label for="emiAmount">Monthly Amount (₹)</label>
-                        <input type="number" id="emiAmount" step="0.01" placeholder="Monthly EMI">
-                    </div>
-                    <div class="form-group">
-                        <label for="emiTenure">Tenure (Months)</label>
-                        <input type="number" id="emiTenure" placeholder="Total months" min="1" max="600">
-                    </div>
-                </div>
-                <div class="emi-row">
-                    <div class="form-group">
-                        <label for="emiStartDate">Start Date</label>
-                        <input type="date" id="emiStartDate">
-                    </div>
-                    <div class="form-group">
-                        <label for="emiCard">Credit Card</label>
-                        <select id="emiCard">
-                            <option value="">Select Card</option>
-                        </select>
-                    </div>
-                </div>
-                <button type="button" onclick="addEMI()">Add EMI</button>
+            <div class="form-group">
+                <label for="emiDescription">EMI Description</label>
+                <input type="text" id="emiDescription" placeholder="e.g., iPhone 15, Car Loan">
             </div>
+            <div class="emi-row">
+                <div class="form-group">
+                    <label for="emiAmount">Monthly Amount (₹)</label>
+                    <input type="number" id="emiAmount" step="0.01" placeholder="Monthly EMI">
+                </div>
+                <div class="form-group">
+                    <label for="emiTenure">Tenure (Months)</label>
+                    <input type="number" id="emiTenure" placeholder="Total months" min="1">
+                </div>
+            </div>
+            <div class="emi-row">
+                <div class="form-group">
+                    <label for="emiStartDate">Start Date</label>
+                    <input type="date" id="emiStartDate">
+                </div>
+                <div class="form-group">
+                    <label for="emiCard">Credit Card</label>
+                    <select id="emiCard">
+                        <option value="">Select Card</option>
+                    </select>
+                </div>
+            </div>
+            <button type="button" onclick="addEMI()">Add EMI</button>
             <div id="emiList"></div>
         </div>
 
         <div class="form-section">
             <h2>💰 Add New Expense</h2>
             <form id="expenseForm">
-                <div class="expense-form-grid">
-                    <div class="expense-row">
-                        <div class="form-group">
-                            <label for="amount">Amount (₹)</label>
-                            <input type="number" id="amount" step="0.01" min="0" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="date">Date</label>
-                            <input type="date" id="date" required>
-                        </div>
-                    </div>
-                    <div class="expense-row">
-                        <div class="form-group">
-                            <label for="category">Category</label>
-                            <select id="category" required>
-                                <option value="">Select Category</option>
-                                <option value="Food & Dining">Food & Dining</option>
-                                <option value="Gas & Transport">Gas & Transport</option>
-                                <option value="Shopping">Shopping</option>
-                                <option value="Entertainment">Entertainment</option>
-                                <option value="Bills & Utilities">Bills & Utilities</option>
-                                <option value="Healthcare">Healthcare</option>
-                                <option value="Travel">Travel</option>
-                                <option value="Groceries">Groceries</option>
-                                <option value="EMI Payment">EMI Payment</option>
-                                <option value="Other">Other</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="creditCard">Credit Card</label>
-                            <select id="creditCard" required>
-                                <option value="">Select Card</option>
-                            </select>
-                        </div>
+                <div class="expense-row">
+                    <div class="form-group">
+                        <label for="amount">Amount (₹)</label>
+                        <input type="number" id="amount" step="0.01" min="0" required>
                     </div>
                     <div class="form-group">
-                        <label for="merchant">Merchant</label>
-                        <input type="text" id="merchant" placeholder="Store name" required>
+                        <label for="date">Date</label>
+                        <input type="date" id="date" required>
+                    </div>
+                </div>
+                <div class="expense-row">
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category" required>
+                            <option value="">Select Category</option>
+                            <option value="Food & Dining">Food & Dining</option>
+                            <option value="Gas & Transport">Gas & Transport</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Bills & Utilities">Bills & Utilities</option>
+                            <option value="Healthcare">Healthcare</option>
+                            <option value="Travel">Travel</option>
+                            <option value="Groceries">Groceries</option>
+                            <option value="EMI Payment">EMI Payment</option>
+                            <option value="Other">Other</option>
+                        </select>
                     </div>
                     <div class="form-group">
-                        <label for="description">Description (Optional)</label>
-                        <textarea id="description" rows="2" placeholder="Additional details"></textarea>
+                        <label for="creditCard">Credit Card</label>
+                        <select id="creditCard" required>
+                            <option value="">Select Card</option>
+                        </select>
                     </div>
+                </div>
+                <div class="form-group">
+                    <label for="merchant">Merchant</label>
+                    <input type="text" id="merchant" placeholder="Store name" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description (Optional)</label>
+                    <textarea id="description" rows="2" placeholder="Additional details"></textarea>
                 </div>
                 <button type="submit">Add Expense</button>
             </form>
@@ -735,7 +443,7 @@
                 </div>
             </div>
             <div id="expensesList">
-                <div class="no-expenses">No expenses recorded yet. Add your first expense above!</div>
+                <div class="no-data">No expenses recorded yet. Add your first expense above!</div>
             </div>
         </div>
     </div>
@@ -746,47 +454,17 @@
         let emis = [];
         let nextId = 1;
 
-        // Set today's date as default
-        document.getElementById('date').valueAsDate = new Date();
-        document.getElementById('emiStartDate').valueAsDate = new Date();
-
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
-            loadData();
+            document.getElementById('date').valueAsDate = new Date();
+            document.getElementById('emiStartDate').valueAsDate = new Date();
+            
             populateMonthFilter();
-            populateCreditCardDropdowns();
             displayCreditCards();
             displayEMIs();
             displayExpenses();
             updateStats();
         });
-
-        function loadData() {
-            try {
-                expenses = JSON.parse(localStorage.getItem('creditCardExpenses')) || [];
-                creditCards = JSON.parse(localStorage.getItem('creditCards')) || [];
-                emis = JSON.parse(localStorage.getItem('creditCardEMIs')) || [];
-                nextId = parseInt(localStorage.getItem('nextExpenseId')) || 1;
-            } catch (error) {
-                console.error('Error loading data:', error);
-                expenses = [];
-                creditCards = [];
-                emis = [];
-                nextId = 1;
-            }
-        }
-
-        function saveData() {
-            try {
-                localStorage.setItem('creditCardExpenses', JSON.stringify(expenses));
-                localStorage.setItem('creditCards', JSON.stringify(creditCards));
-                localStorage.setItem('creditCardEMIs', JSON.stringify(emis));
-                localStorage.setItem('nextExpenseId', nextId.toString());
-            } catch (error) {
-                console.error('Error saving data:', error);
-                alert('Error saving data. Storage might be full.');
-            }
-        }
 
         // Add expense form handler
         document.getElementById('expenseForm').addEventListener('submit', function(e) {
@@ -810,17 +488,14 @@
             };
             
             expenses.unshift(expense);
-            saveData();
             displayExpenses();
             updateStats();
-            displayCreditCards();
             
             // Reset form
             this.reset();
             document.getElementById('date').valueAsDate = new Date();
             
-            // Show success animation
-            showSuccessAnimation(document.querySelector('button[type="submit"]'), 'Added!');
+            alert('Expense added successfully!');
         });
 
         // Filter handlers
@@ -847,12 +522,11 @@
             };
             
             creditCards.push(newCard);
-            saveData();
             populateCreditCardDropdowns();
             displayCreditCards();
             
             document.getElementById('newCardName').value = '';
-            showSuccessAnimation(event.target, 'Added!');
+            alert('Credit card added successfully!');
         }
 
         function removeCreditCard(cardId) {
@@ -867,7 +541,6 @@
             }
             
             creditCards = creditCards.filter(c => c.id !== cardId);
-            saveData();
             populateCreditCardDropdowns();
             displayCreditCards();
             displayExpenses();
@@ -890,11 +563,6 @@
                 return;
             }
             
-            if (tenure <= 0 || tenure > 600) {
-                alert('Please enter a valid tenure between 1 and 600 months');
-                return;
-            }
-            
             const newEMI = {
                 id: Date.now(),
                 description: description,
@@ -906,31 +574,260 @@
             };
             
             emis.push(newEMI);
-            saveData();
             displayEMIs();
             updateStats();
             
             // Reset form
             document.getElementById('emiDescription').value = '';
             document.getElementById('emiAmount').value = '';
-            document.getElementById('emiStartDate').value = '';
+            document.getElementById('emiStartDate').valueAsDate = new Date();
             document.getElementById('emiTenure').value = '';
             document.getElementById('emiCard').value = '';
             
-            showSuccessAnimation(event.target, 'Added!');
+            alert('EMI added successfully!');
         }
 
         function removeEMI(emiId) {
             if (confirm('Remove this EMI?')) {
                 emis = emis.filter(emi => emi.id !== emiId);
-                saveData();
                 displayEMIs();
                 updateStats();
             }
+        }
+
+        function removeExpense(expenseId) {
+            if (confirm('Remove this expense?')) {
+                expenses = expenses.filter(expense => expense.id !== expenseId);
+                displayExpenses();
+                updateStats();
+            }
+        }
+
+        function displayCreditCards() {
+            const cardsList = document.getElementById('cardsList');
+            
+            if (creditCards.length === 0) {
+                cardsList.innerHTML = '<div class="no-data">No credit cards added yet.</div>';
+                return;
+            }
+
+            let html = '';
+            creditCards.forEach(card => {
+                const expenseCount = expenses.filter(e => e.creditCard === card.name).length;
+                const totalAmount = expenses.filter(e => e.creditCard === card.name)
+                    .reduce((sum, e) => sum + e.amount, 0);
+
+                html += `
+                    <div class="card-item">
+                        <div>
+                            <div class="card-header">
+                                <strong>${card.name}</strong>
+                            </div>
+                            <div class="expense-details">
+                                ${expenseCount} transactions • ₹${totalAmount.toFixed(2)}
+                            </div>
+                        </div>
+                        <button class="delete-btn" onclick="removeCreditCard(${card.id})">Remove</button>
+                    </div>
+                `;
+            });
+
+            cardsList.innerHTML = html;
+            populateCreditCardDropdowns();
         }
 
         function displayEMIs() {
             const emiList = document.getElementById('emiList');
             
             if (emis.length === 0) {
-                emiList.innerHTML = '<div style
+                emiList.innerHTML = '<div class="no-data">No EMIs added yet.</div>';
+                return;
+            }
+
+            let html = '';
+            emis.forEach(emi => {
+                const startDate = new Date(emi.startDate);
+                const currentDate = new Date();
+                const monthsElapsed = Math.max(0, (currentDate.getFullYear() - startDate.getFullYear()) * 12 + (currentDate.getMonth() - startDate.getMonth()));
+                const monthsRemaining = Math.max(0, emi.tenure - monthsElapsed);
+                const progressPercentage = Math.min(100, (monthsElapsed / emi.tenure) * 100);
+
+                html += `
+                    <div class="emi-item">
+                        <div class="emi-header">
+                            <div>
+                                <div class="emi-amount">₹${emi.amount.toFixed(2)}/month</div>
+                                <strong>${emi.description}</strong>
+                            </div>
+                            <button class="delete-btn" onclick="removeEMI(${emi.id})">Remove</button>
+                        </div>
+                        <div class="emi-details">
+                            Card: ${emi.creditCard} • ${monthsRemaining} months remaining
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progressPercentage}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            emiList.innerHTML = html;
+        }
+
+        function displayExpenses() {
+            const expensesList = document.getElementById('expensesList');
+            const filterMonth = document.getElementById('filterMonth').value;
+            const filterCategory = document.getElementById('filterCategory').value;
+            const filterCard = document.getElementById('filterCard').value;
+
+            let filteredExpenses = expenses.filter(expense => {
+                const expenseDate = new Date(expense.date);
+                const monthYear = `${expenseDate.getFullYear()}-${String(expenseDate.getMonth() + 1).padStart(2, '0')}`;
+                
+                return (!filterMonth || monthYear === filterMonth) &&
+                       (!filterCategory || expense.category === filterCategory) &&
+                       (!filterCard || expense.creditCard === filterCard);
+            });
+
+            if (filteredExpenses.length === 0) {
+                expensesList.innerHTML = '<div class="no-data">No expenses match your filters.</div>';
+                return;
+            }
+
+            let html = '';
+            filteredExpenses.forEach(expense => {
+                html += `
+                    <div class="expense-item">
+                        <div class="expense-header">
+                            <div>
+                                <div class="expense-amount">₹${expense.amount.toFixed(2)}</div>
+                                <div>
+                                    <span class="expense-category">${expense.category}</span>
+                                    <span class="expense-card">${expense.creditCard}</span>
+                                </div>
+                            </div>
+                            <button class="delete-btn" onclick="removeExpense(${expense.id})">Delete</button>
+                        </div>
+                        <div class="expense-details">
+                            <strong>${expense.merchant}</strong>
+                            ${expense.description ? `• ${expense.description}` : ''}
+                            <br><small>${new Date(expense.date).toLocaleDateString()}</small>
+                        </div>
+                    </div>
+                `;
+            });
+
+            expensesList.innerHTML = html;
+        }
+
+        function updateStats() {
+            const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+            const currentMonth = new Date();
+            const monthlyExpenses = expenses.filter(expense => {
+                const expenseDate = new Date(expense.date);
+                return expenseDate.getMonth() === currentMonth.getMonth() && 
+                       expenseDate.getFullYear() === currentMonth.getFullYear();
+            }).reduce((sum, expense) => sum + expense.amount, 0);
+
+            const monthlyEMI = emis.reduce((sum, emi) => sum + emi.amount, 0);
+
+            document.getElementById('totalExpenses').textContent = `₹${totalExpenses.toFixed(2)}`;
+            document.getElementById('monthlyExpenses').textContent = `₹${monthlyExpenses.toFixed(2)}`;
+            document.getElementById('monthlyEMI').textContent = `₹${monthlyEMI.toFixed(2)}`;
+            document.getElementById('expenseCount').textContent = expenses.length;
+        }
+
+        function populateMonthFilter() {
+            const monthFilter = document.getElementById('filterMonth');
+            const months = new Set();
+            
+            expenses.forEach(expense => {
+                const date = new Date(expense.date);
+                const monthYear = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                months.add(monthYear);
+            });
+
+            const sortedMonths = Array.from(months).sort().reverse();
+            
+            let options = '<option value="">All Months</option>';
+            sortedMonths.forEach(month => {
+                const [year, monthNum] = month.split('-');
+                const monthName = new Date(year, monthNum - 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                options += `<option value="${month}">${monthName}</option>`;
+            });
+            
+            monthFilter.innerHTML = options;
+        }
+
+        function populateCreditCardDropdowns() {
+            const creditCardSelect = document.getElementById('creditCard');
+            const emiCardSelect = document.getElementById('emiCard');
+            const filterCardSelect = document.getElementById('filterCard');
+
+            let options = '<option value="">Select Card</option>';
+            creditCards.forEach(card => {
+                options += `<option value="${card.name}">${card.name}</option>`;
+            });
+
+            creditCardSelect.innerHTML = options;
+            emiCardSelect.innerHTML = options;
+
+            let filterOptions = '<option value="">All Cards</option>';
+            creditCards.forEach(card => {
+                filterOptions += `<option value="${card.name}">${card.name}</option>`;
+            });
+            filterCardSelect.innerHTML = filterOptions;
+        }
+
+        function exportData() {
+            if (expenses.length === 0) {
+                alert('No data to export');
+                return;
+            }
+
+            const data = {
+                expenses: expenses,
+                creditCards: creditCards,
+                emis: emis,
+                exportDate: new Date().toISOString()
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'credit-card-data.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function clearAllExpenses() {
+            if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
+                expenses = [];
+                creditCards = [];
+                emis = [];
+                nextId = 1;
+                
+                displayExpenses();
+                displayCreditCards();
+                displayEMIs();
+                updateStats();
+                populateMonthFilter();
+                
+                alert('All data cleared successfully!');
+            }
+        }
+
+        function showSuccessAnimation(button, message) {
+            const originalText = button.textContent;
+            button.textContent = message;
+            button.style.background = 'linear-gradient(135deg, #00b894, #00a085)';
+            
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
