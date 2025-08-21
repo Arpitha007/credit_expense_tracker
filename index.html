@@ -15,23 +15,24 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 20px;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
+        /* Header */
         .header {
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
             color: white;
             padding: 30px;
             text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
 
         .header h1 {
@@ -45,64 +46,165 @@
             font-size: 1.1rem;
         }
 
+        /* Navigation */
+        .nav-container {
+            background: white;
+            border-bottom: 2px solid #f0f0f0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-tabs {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            padding: 20px 30px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            position: relative;
+        }
+
+        .nav-tab:hover {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .nav-tab.active {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .nav-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        /* Main Content */
         .main-content {
+            flex: 1;
             padding: 40px;
         }
 
+        .section {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+        }
+
+        /* Stats Grid */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
         }
 
         .stat-card {
             background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            border-left: 5px solid #667eea;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            transition: all 0.3s ease;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
         .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
         }
 
         .stat-card h3 {
-            color: #333;
-            font-size: 0.9rem;
+            color: #666;
+            font-size: 1rem;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
         .stat-card .value {
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: bold;
             color: #667eea;
+            margin-bottom: 10px;
         }
 
+        .stat-card .description {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        /* Form Section */
         .form-section {
             background: white;
-            border-radius: 15px;
-            padding: 30px;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             margin-bottom: 30px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        .form-section h2 {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 1.5rem;
         }
 
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
         }
 
         .form-group {
@@ -113,61 +215,76 @@
         .form-group label {
             color: #555;
             margin-bottom: 8px;
-            font-weight: 500;
+            font-weight: 600;
+            font-size: 0.95rem;
         }
 
         .form-group input, .form-group select {
-            padding: 12px;
+            padding: 15px;
             border: 2px solid #e1e5e9;
-            border-radius: 8px;
+            border-radius: 12px;
             font-size: 1rem;
-            transition: border-color 0.3s ease;
+            transition: all 0.3s ease;
+            background: #fafbfc;
         }
 
         .form-group input:focus, .form-group select:focus {
             outline: none;
             border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            background: white;
         }
 
         .btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
+            padding: 15px 30px;
+            border-radius: 12px;
             font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            margin-right: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
 
         .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
         }
 
         .btn-danger {
             background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
         }
 
         .btn-danger:hover {
-            box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
         }
 
+        .btn-small {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+        }
+
+        /* Cards Grid */
         .cards-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
         }
 
         .credit-card {
             background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            border-radius: 15px;
-            padding: 25px;
+            border-radius: 20px;
+            padding: 30px;
             color: white;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
         }
@@ -184,7 +301,8 @@
         }
 
         .credit-card:hover {
-            transform: translateY(-5px) rotateX(5deg);
+            transform: translateY(-8px) rotateX(2deg);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
         }
 
         .credit-card:hover::before {
@@ -195,81 +313,90 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .card-name {
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             font-weight: bold;
         }
 
         .card-type {
             background: rgba(255, 255, 255, 0.2);
-            padding: 4px 12px;
-            border-radius: 20px;
+            padding: 6px 15px;
+            border-radius: 25px;
             font-size: 0.8rem;
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .card-details {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .card-detail {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 0.9rem;
+            margin-bottom: 12px;
+            font-size: 1rem;
         }
 
         .card-detail strong {
-            color: rgba(255, 255, 255, 0.9);
+            color: rgba(255, 255, 255, 0.95);
         }
 
         .progress-bar {
             background: rgba(255, 255, 255, 0.2);
-            height: 8px;
-            border-radius: 4px;
+            height: 10px;
+            border-radius: 5px;
             overflow: hidden;
-            margin-top: 10px;
+            margin: 20px 0;
         }
 
         .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, #4CAF50, #45a049);
             transition: width 0.5s ease;
-            border-radius: 4px;
+            border-radius: 5px;
         }
 
         .card-actions {
             display: flex;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 15px;
+            margin-top: 25px;
         }
 
-        .btn-small {
-            padding: 8px 16px;
-            font-size: 0.9rem;
-        }
-
-        .transactions-section {
-            margin-top: 30px;
+        /* Transactions */
+        .transactions-container {
+            max-height: 600px;
+            overflow-y: auto;
+            padding-right: 10px;
         }
 
         .transaction-item {
             background: white;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
         }
 
         .transaction-item:hover {
-            transform: translateX(5px);
+            transform: translateX(8px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .transaction-item.expense {
+            border-left-color: #ff6b6b;
+        }
+
+        .transaction-item.payment {
+            border-left-color: #4CAF50;
         }
 
         .transaction-info {
@@ -279,11 +406,14 @@
         .transaction-date {
             color: #666;
             font-size: 0.9rem;
+            margin-bottom: 5px;
         }
 
         .transaction-description {
-            font-weight: 500;
-            margin: 5px 0;
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+            color: #333;
         }
 
         .transaction-card {
@@ -292,93 +422,51 @@
         }
 
         .transaction-amount {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: bold;
+            padding: 10px 15px;
+            border-radius: 10px;
         }
 
         .transaction-amount.expense {
             color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
         }
 
         .transaction-amount.payment {
             color: #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
         }
 
-        .chart-container h3 {
-            color: #333;
-            margin-bottom: 15px;
+        /* Empty States */
+        .empty-state {
             text-align: center;
+            padding: 60px 20px;
+            color: #666;
         }
 
-        .monthly-summary {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
+        .empty-state .icon {
+            font-size: 4rem;
             margin-bottom: 20px;
+            opacity: 0.3;
         }
 
-        .monthly-stat {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .monthly-stat h4 {
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-            opacity: 0.9;
-        }
-
-        .monthly-stat .amount {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        .chart-bar {
-            display: flex;
-            align-items: center;
+        .empty-state h3 {
+            font-size: 1.3rem;
             margin-bottom: 10px;
-            padding: 10px;
-            background: #f8f9fa;
-            border-radius: 5px;
+            color: #555;
         }
 
-        .chart-month {
-            width: 80px;
-            font-weight: 500;
-            font-size: 0.9rem;
+        .empty-state p {
+            font-size: 1rem;
+            line-height: 1.6;
         }
 
-        .chart-bar-fill {
-            flex: 1;
-            height: 20px;
-            background: #e9ecef;
-            border-radius: 10px;
-            margin: 0 10px;
-            overflow: hidden;
-        }
-
-        .chart-bar-inner {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            transition: width 0.5s ease;
-            border-radius: 10px;
-        }
-
-        .chart-amount {
-            min-width: 80px;
-            text-align: right;
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-
+        /* Responsive Design */
         @media (max-width: 768px) {
             .container {
                 margin: 0;
                 border-radius: 0;
-                min-height: 100vh;
             }
 
             .main-content {
@@ -393,6 +481,15 @@
                 font-size: 2rem;
             }
 
+            .nav-tabs {
+                justify-content: start;
+            }
+
+            .nav-tab {
+                padding: 15px 20px;
+                font-size: 0.9rem;
+            }
+
             .form-grid {
                 grid-template-columns: 1fr;
             }
@@ -400,6 +497,58 @@
             .cards-grid {
                 grid-template-columns: 1fr;
             }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+
+            .transaction-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .transaction-amount {
+                align-self: flex-end;
+            }
+        }
+
+        /* Custom Scrollbar */
+        .transactions-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .transactions-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .transactions-container::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 4px;
+        }
+
+        .transactions-container::-webkit-scrollbar-thumb:hover {
+            background: #5a67d8;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4CAF50;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .alert-error {
+            background: rgba(255, 107, 107, 0.1);
+            color: #ff6b6b;
+            border: 1px solid rgba(255, 107, 107, 0.3);
         }
     </style>
 </head>
@@ -407,183 +556,261 @@
     <div class="container">
         <div class="header">
             <h1>💳 Credit Card Tracker</h1>
-            <p>Manage your credit cards and track your spending</p>
+            <p>Manage your credit cards and track your spending with ease</p>
         </div>
 
+        <nav class="nav-container">
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="showSection('dashboard', this)">📊 Dashboard</button>
+                <button class="nav-tab" onclick="showSection('cards', this)">💳 My Cards</button>
+                <button class="nav-tab" onclick="showSection('add-card', this)">➕ Add Card</button>
+                <button class="nav-tab" onclick="showSection('transactions', this)">💰 Transactions</button>
+                <button class="nav-tab" onclick="showSection('add-transaction', this)">📝 Add Transaction</button>
+            </div>
+        </nav>
+
         <div class="main-content">
-            <!-- Statistics -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <h3>Total Cards</h3>
-                    <div class="value" id="totalCards">0</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Total Balance</h3>
-                    <div class="value" id="totalBalance">₹0.00</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Available Credit</h3>
-                    <div class="value" id="availableCredit">₹0.00</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Credit Utilization</h3>
-                    <div class="value" id="creditUtilization">0%</div>
-                </div>
-                <div class="stat-card">
-                    <h3>This Month</h3>
-                    <div class="value" id="thisMonthExpenses">₹0.00</div>
-                </div>
-                <div class="stat-card">
-                    <h3>This Year</h3>
-                    <div class="value" id="thisYearExpenses">₹0.00</div>
-                </div>
-            </div>
-
-            <!-- Add New Card Form -->
-            <div class="form-section">
-                <h2>Add New Credit Card</h2>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="cardName">Card Name</label>
-                        <input type="text" id="cardName" placeholder="e.g., Chase Freedom">
+            <div id="alertContainer"></div>
+            
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="section active">
+                <h2 class="section-title">Financial Overview</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total Cards</h3>
+                        <div class="value" id="totalCards">0</div>
+                        <div class="description">Active credit cards</div>
                     </div>
-                    <div class="form-group">
-                        <label for="cardType">Card Type</label>
-                        <select id="cardType">
-                            <option value="Visa">Visa</option>
-                            <option value="Mastercard">Mastercard</option>
-                            <option value="American Express">American Express</option>
-                            <option value="Discover">Discover</option>
-                        </select>
+                    <div class="stat-card">
+                        <h3>Total Balance</h3>
+                        <div class="value" id="totalBalance">₹0.00</div>
+                        <div class="description">Outstanding debt</div>
                     </div>
-                    <div class="form-group">
-                        <label for="creditLimit">Credit Limit</label>
-                        <input type="number" id="creditLimit" placeholder="5000" step="0.01">
+                    <div class="stat-card">
+                        <h3>Available Credit</h3>
+                        <div class="value" id="availableCredit">₹0.00</div>
+                        <div class="description">Remaining credit limit</div>
                     </div>
-                    <div class="form-group">
-                        <label for="currentBalance">Current Balance</label>
-                        <input type="number" id="currentBalance" placeholder="0" step="0.01">
-                    </div>
-                </div>
-                <button class="btn" onclick="addCard()">Add Credit Card</button>
-            </div>
-
-            <!-- Add Transaction Form -->
-            <div class="form-section">
-                <h2>Add Transaction</h2>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="transactionCard">Select Card</label>
-                        <select id="transactionCard">
-                            <option value="">Select a card</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="transactionType">Transaction Type</label>
-                        <select id="transactionType">
-                            <option value="expense">Expense</option>
-                            <option value="payment">Payment</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="transactionAmount">Amount</label>
-                        <input type="number" id="transactionAmount" placeholder="0.00" step="0.01">
-                    </div>
-                    <div class="form-group">
-                        <label for="transactionDescription">Description</label>
-                        <input type="text" id="transactionDescription" placeholder="e.g., Grocery shopping">
-                    </div>
-                </div>
-                <button class="btn" onclick="addTransaction()">Add Transaction</button>
-            </div>
-
-            <!-- Monthly Expense Tracking -->
-            <div class="form-section">
-                <h2>Monthly Expense Tracking</h2>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="monthFilter">Select Month</label>
-                        <select id="monthFilter" onchange="renderMonthlyExpenses()">
-                            <!-- Options will be populated by JavaScript -->
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="cardFilter">Filter by Card</label>
-                        <select id="cardFilter" onchange="renderMonthlyExpenses()">
-                            <option value="">All Cards</option>
-                        </select>
-                    </div>
-                </div>
-                <div id="monthlyExpensesContainer">
-                    <!-- Monthly expenses will be displayed here -->
-                </div>
-                
-                <!-- Monthly Summary Chart -->
-                <div class="chart-container" style="margin-top: 30px;">
-                    <h3>Monthly Expense Trends</h3>
-                    <div id="monthlyChart" style="height: 300px; background: white; border-radius: 10px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; color: #666;">
-                        Add some transactions to see your monthly spending chart
+                    <div class="stat-card">
+                        <h3>Credit Utilization</h3>
+                        <div class="value" id="creditUtilization">0%</div>
+                        <div class="description">Recommended: Under 30%</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Credit Cards Display -->
-            <div class="form-section">
-                <h2>Your Credit Cards</h2>
-                <div class="cards-grid" id="cardsContainer">
-                    <!-- Cards will be dynamically generated here -->
+            <!-- My Cards Section -->
+            <div id="cards" class="section">
+                <h2 class="section-title">My Credit Cards</h2>
+                <div class="form-section">
+                    <div class="cards-grid" id="cardsContainer">
+                        <!-- Cards will be dynamically generated here -->
+                    </div>
                 </div>
             </div>
 
-            <!-- Recent Transactions -->
-            <div class="form-section transactions-section">
-                <h2>Recent Transactions</h2>
-                <div id="transactionsContainer">
-                    <!-- Transactions will be dynamically generated here -->
+            <!-- Add Card Section -->
+            <div id="add-card" class="section">
+                <h2 class="section-title">Add New Credit Card</h2>
+                <div class="form-section">
+                    <form id="addCardForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="cardName">Card Name *</label>
+                                <input type="text" id="cardName" placeholder="e.g., Chase Freedom Unlimited" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="cardType">Card Type *</label>
+                                <select id="cardType" required>
+                                    <option value="Visa">Visa</option>
+                                    <option value="Mastercard">Mastercard</option>
+                                    <option value="American Express">American Express</option>
+                                    <option value="Discover">Discover</option>
+                                    <option value="RuPay">RuPay</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="creditLimit">Credit Limit *</label>
+                                <input type="number" id="creditLimit" placeholder="50000" step="0.01" min="0" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="currentBalance">Current Balance</label>
+                                <input type="number" id="currentBalance" placeholder="0" step="0.01" min="0">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn">Add Credit Card</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Transactions Section -->
+            <div id="transactions" class="section">
+                <h2 class="section-title">Transaction History</h2>
+                <div class="form-section">
+                    <div class="transactions-container" id="transactionsContainer">
+                        <!-- Transactions will be dynamically generated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Transaction Section -->
+            <div id="add-transaction" class="section">
+                <h2 class="section-title">Add New Transaction</h2>
+                <div class="form-section">
+                    <form id="addTransactionForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="transactionCard">Select Card *</label>
+                                <select id="transactionCard" required>
+                                    <option value="">Choose a credit card</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="transactionType">Transaction Type *</label>
+                                <select id="transactionType" required>
+                                    <option value="expense">💸 Expense</option>
+                                    <option value="payment">💳 Payment</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="transactionAmount">Amount *</label>
+                                <input type="number" id="transactionAmount" placeholder="0.00" step="0.01" min="0.01" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="transactionDescription">Description *</label>
+                                <input type="text" id="transactionDescription" placeholder="e.g., Grocery shopping at Walmart" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn">Add Transaction</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        // App state
         let cards = [];
         let transactions = [];
         let nextCardId = 1;
         let nextTransactionId = 1;
 
-        // Load data from memory when page loads
-        window.onload = function() {
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            initializeEventListeners();
             updateStats();
             renderCards();
             renderTransactions();
             updateCardSelects();
-            populateMonthFilter();
-            renderMonthlyExpenses();
-        };
+        });
+
+        // Load data from localStorage if available
+        function loadData() {
+            const savedCards = localStorage.getItem('creditCards');
+            const savedTransactions = localStorage.getItem('transactions');
+            const savedNextCardId = localStorage.getItem('nextCardId');
+            const savedNextTransactionId = localStorage.getItem('nextTransactionId');
+
+            if (savedCards) {
+                cards = JSON.parse(savedCards);
+            }
+            if (savedTransactions) {
+                transactions = JSON.parse(savedTransactions);
+            }
+            if (savedNextCardId) {
+                nextCardId = parseInt(savedNextCardId);
+            }
+            if (savedNextTransactionId) {
+                nextTransactionId = parseInt(savedNextTransactionId);
+            }
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('creditCards', JSON.stringify(cards));
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+            localStorage.setItem('nextCardId', nextCardId.toString());
+            localStorage.setItem('nextTransactionId', nextTransactionId.toString());
+        }
+
+        // Initialize event listeners
+        function initializeEventListeners() {
+            document.getElementById('addCardForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addCard();
+            });
+
+            document.getElementById('addTransactionForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                addTransaction();
+            });
+        }
+
+        // Show alert messages
+        function showAlert(message, type = 'success') {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 3000);
+        }
+
+        // Navigation
+        function showSection(sectionId, clickedTab) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all nav tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Add active class to clicked tab
+            clickedTab.classList.add('active');
+        }
 
         function addCard() {
-            const name = document.getElementById('cardName').value;
+            const name = document.getElementById('cardName').value.trim();
             const type = document.getElementById('cardType').value;
             const limit = parseFloat(document.getElementById('creditLimit').value) || 0;
             const balance = parseFloat(document.getElementById('currentBalance').value) || 0;
 
+            // Validation
             if (!name) {
-                alert('Please enter a card name');
+                showAlert('Please enter a card name', 'error');
                 return;
             }
 
-            if (limit < 0) {
-                alert('Credit limit cannot be negative');
+            if (limit <= 0) {
+                showAlert('Please enter a valid credit limit', 'error');
                 return;
             }
 
             if (balance < 0) {
-                alert('Balance cannot be negative');
+                showAlert('Balance cannot be negative', 'error');
                 return;
             }
 
             if (balance > limit) {
-                alert('Balance cannot exceed credit limit');
+                showAlert('Balance cannot exceed credit limit', 'error');
+                return;
+            }
+
+            // Check for duplicate card names
+            if (cards.some(card => card.name.toLowerCase() === name.toLowerCase())) {
+                showAlert('A card with this name already exists', 'error');
                 return;
             }
 
@@ -596,25 +823,34 @@
             };
 
             cards.push(card);
+            saveData();
 
             // Clear form
-            document.getElementById('cardName').value = '';
-            document.getElementById('creditLimit').value = '';
-            document.getElementById('currentBalance').value = '';
+            document.getElementById('addCardForm').reset();
 
             updateStats();
             renderCards();
             updateCardSelects();
+
+            showAlert('Credit card added successfully!');
+            
+            // Navigate to cards section
+            const cardsTab = document.querySelector('[onclick*="cards"]');
+            showSection('cards', cardsTab);
         }
 
         function deleteCard(cardId) {
             if (confirm('Are you sure you want to delete this card? This will also remove all associated transactions.')) {
                 cards = cards.filter(card => card.id !== cardId);
                 transactions = transactions.filter(transaction => transaction.cardId !== cardId);
+                
+                saveData();
                 updateStats();
                 renderCards();
                 renderTransactions();
                 updateCardSelects();
+                
+                showAlert('Card deleted successfully');
             }
         }
 
@@ -622,33 +858,34 @@
             const cardId = parseInt(document.getElementById('transactionCard').value);
             const type = document.getElementById('transactionType').value;
             const amount = parseFloat(document.getElementById('transactionAmount').value) || 0;
-            const description = document.getElementById('transactionDescription').value;
+            const description = document.getElementById('transactionDescription').value.trim();
 
+            // Validation
             if (!cardId) {
-                alert('Please select a card');
+                showAlert('Please select a card', 'error');
                 return;
             }
 
             if (amount <= 0) {
-                alert('Please enter a valid amount');
+                showAlert('Please enter a valid amount', 'error');
                 return;
             }
 
             if (!description) {
-                alert('Please enter a description');
+                showAlert('Please enter a description', 'error');
                 return;
             }
 
             const card = cards.find(c => c.id === cardId);
             if (!card) {
-                alert('Card not found');
+                showAlert('Card not found', 'error');
                 return;
             }
 
             // Update card balance
             if (type === 'expense') {
                 if (card.balance + amount > card.limit) {
-                    alert('This transaction would exceed the credit limit');
+                    showAlert(`This transaction would exceed the credit limit. Available credit: ₹${(card.limit - card.balance).toFixed(2)}`, 'error');
                     return;
                 }
                 card.balance += amount;
@@ -662,22 +899,52 @@
                 type: type,
                 amount: amount,
                 description: description,
-                date: new Date().toLocaleDateString(),
-                fullDate: new Date()
+                date: new Date().toLocaleDateString('en-IN'),
+                cardName: card.name
             };
 
             transactions.unshift(transaction); // Add to beginning of array
+            saveData();
 
             // Clear form
-            document.getElementById('transactionCard').value = '';
-            document.getElementById('transactionAmount').value = '';
-            document.getElementById('transactionDescription').value = '';
+            document.getElementById('addTransactionForm').reset();
 
             updateStats();
             renderCards();
             renderTransactions();
-            populateMonthFilter();
-            renderMonthlyExpenses();
+
+            showAlert('Transaction added successfully!');
+            
+            // Navigate to transactions section
+            const transactionsTab = document.querySelector('[onclick*="transactions"]:not([onclick*="add"])');
+            showSection('transactions', transactionsTab);
+        }
+
+        function deleteTransaction(transactionId) {
+            const transaction = transactions.find(t => t.id === transactionId);
+            if (!transaction) return;
+
+            if (confirm('Are you sure you want to delete this transaction?')) {
+                const card = cards.find(c => c.id === transaction.cardId);
+                
+                if (card) {
+                    // Reverse the transaction effect on card balance
+                    if (transaction.type === 'expense') {
+                        card.balance = Math.max(0, card.balance - transaction.amount);
+                    } else {
+                        card.balance = Math.min(card.limit, card.balance + transaction.amount);
+                    }
+                }
+                
+                transactions = transactions.filter(t => t.id !== transactionId);
+                saveData();
+                
+                updateStats();
+                renderCards();
+                renderTransactions();
+                
+                showAlert('Transaction deleted successfully');
+            }
         }
 
         function updateStats() {
@@ -687,289 +954,5 @@
             const availableCredit = totalLimit - totalBalance;
             const utilization = totalLimit > 0 ? (totalBalance / totalLimit * 100) : 0;
 
-            // Calculate this month and year expenses
-            const now = new Date();
-            const thisMonth = now.getMonth();
-            const thisYear = now.getFullYear();
-
-            const thisMonthExpenses = transactions
-                .filter(t => t.type === 'expense' && t.fullDate && 
-                        t.fullDate.getMonth() === thisMonth && 
-                        t.fullDate.getFullYear() === thisYear)
-                .reduce((sum, t) => sum + t.amount, 0);
-
-            const thisYearExpenses = transactions
-                .filter(t => t.type === 'expense' && t.fullDate && 
-                        t.fullDate.getFullYear() === thisYear)
-                .reduce((sum, t) => sum + t.amount, 0);
-
             document.getElementById('totalCards').textContent = totalCards;
-            document.getElementById('totalBalance').textContent = `₹${totalBalance.toFixed(2)}`;
-            document.getElementById('availableCredit').textContent = `₹${availableCredit.toFixed(2)}`;
-            document.getElementById('creditUtilization').textContent = `${utilization.toFixed(1)}%`;
-            document.getElementById('thisMonthExpenses').textContent = `₹${thisMonthExpenses.toFixed(2)}`;
-            document.getElementById('thisYearExpenses').textContent = `₹${thisYearExpenses.toFixed(2)}`;
-        }
-
-        function renderCards() {
-            const container = document.getElementById('cardsContainer');
-            
-            if (cards.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: #666; padding: 40px;">No credit cards added yet. Add your first card above!</p>';
-                return;
-            }
-
-            container.innerHTML = cards.map(card => {
-                const utilization = card.limit > 0 ? (card.balance / card.limit * 100) : 0;
-                const available = card.limit - card.balance;
-                
-                return `
-                    <div class="credit-card">
-                        <div class="card-header">
-                            <div class="card-name">${card.name}</div>
-                            <div class="card-type">${card.type}</div>
-                        </div>
-                        <div class="card-details">
-                            <div class="card-detail">
-                                <span>Balance:</span>
-                                <strong>₹${card.balance.toFixed(2)}</strong>
-                            </div>
-                            <div class="card-detail">
-                                <span>Credit Limit:</span>
-                                <strong>₹${card.limit.toFixed(2)}</strong>
-                            </div>
-                            <div class="card-detail">
-                                <span>Available:</span>
-                                <strong>₹${available.toFixed(2)}</strong>
-                            </div>
-                            <div class="card-detail">
-                                <span>Utilization:</span>
-                                <strong>${utilization.toFixed(1)}%</strong>
-                            </div>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: ${Math.min(utilization, 100)}%"></div>
-                        </div>
-                        <div class="card-actions">
-                            <button class="btn btn-small btn-danger" onclick="deleteCard(${card.id})">Delete</button>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function renderTransactions() {
-            const container = document.getElementById('transactionsContainer');
-            
-            if (transactions.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No transactions recorded yet.</p>';
-                return;
-            }
-
-            const recentTransactions = transactions.slice(0, 10); // Show last 10 transactions
-            
-            container.innerHTML = recentTransactions.map(transaction => {
-                const card = cards.find(c => c.id === transaction.cardId);
-                const cardName = card ? card.name : 'Deleted Card';
-                const amountClass = transaction.type === 'expense' ? 'expense' : 'payment';
-                const amountSign = transaction.type === 'expense' ? '-' : '+';
-                
-                return `
-                    <div class="transaction-item">
-                        <div class="transaction-info">
-                            <div class="transaction-date">${transaction.date}</div>
-                            <div class="transaction-description">${transaction.description}</div>
-                            <div class="transaction-card">${cardName}</div>
-                        </div>
-                        <div class="transaction-amount ${amountClass}">
-                            ${amountSign}₹${transaction.amount.toFixed(2)}
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function updateCardSelects() {
-            const transactionSelect = document.getElementById('transactionCard');
-            const filterSelect = document.getElementById('cardFilter');
-            
-            // Update transaction card select
-            transactionSelect.innerHTML = '<option value="">Select a card</option>';
-            cards.forEach(card => {
-                transactionSelect.innerHTML += `<option value="${card.id}">${card.name}</option>`;
-            });
-
-            // Update filter card select
-            filterSelect.innerHTML = '<option value="">All Cards</option>';
-            cards.forEach(card => {
-                filterSelect.innerHTML += `<option value="${card.id}">${card.name}</option>`;
-            });
-        }
-
-        function populateMonthFilter() {
-            const select = document.getElementById('monthFilter');
-            const currentYear = new Date().getFullYear();
-            const months = [
-                'January', 'February', 'March', 'April', 'May', 'June',
-                'July', 'August', 'September', 'October', 'November', 'December'
-            ];
-
-            select.innerHTML = '';
-            
-            // Add current year months
-            for (let i = 0; i < 12; i++) {
-                const value = `${currentYear}-${i}`;
-                const text = `${months[i]} ${currentYear}`;
-                select.innerHTML += `<option value="${value}">${text}</option>`;
-            }
-
-            // Set current month as selected
-            const currentMonth = new Date().getMonth();
-            select.value = `${currentYear}-${currentMonth}`;
-        }
-
-        function renderMonthlyExpenses() {
-            const monthFilter = document.getElementById('monthFilter').value;
-            const cardFilter = document.getElementById('cardFilter').value;
-            const container = document.getElementById('monthlyExpensesContainer');
-
-            if (!monthFilter) return;
-
-            const [year, month] = monthFilter.split('-').map(Number);
-            
-            // Filter transactions for selected month and card
-            let filteredTransactions = transactions.filter(t => {
-                if (!t.fullDate) return false;
-                if (t.fullDate.getFullYear() !== year) return false;
-                if (t.fullDate.getMonth() !== month) return false;
-                if (cardFilter && t.cardId !== parseInt(cardFilter)) return false;
-                return true;
-            });
-
-            const expenses = filteredTransactions.filter(t => t.type === 'expense');
-            const payments = filteredTransactions.filter(t => t.type === 'payment');
-            
-            const totalExpenses = expenses.reduce((sum, t) => sum + t.amount, 0);
-            const totalPayments = payments.reduce((sum, t) => sum + t.amount, 0);
-            const netSpending = totalExpenses - totalPayments;
-
-            const months = [
-                'January', 'February', 'March', 'April', 'May', 'June',
-                'July', 'August', 'September', 'October', 'November', 'December'
-            ];
-
-            container.innerHTML = `
-                <div class="monthly-summary">
-                    <div class="monthly-stat">
-                        <h4>Total Expenses</h4>
-                        <div class="amount">₹${totalExpenses.toFixed(2)}</div>
-                    </div>
-                    <div class="monthly-stat">
-                        <h4>Total Payments</h4>
-                        <div class="amount">₹${totalPayments.toFixed(2)}</div>
-                    </div>
-                    <div class="monthly-stat">
-                        <h4>Net Spending</h4>
-                        <div class="amount">₹${netSpending.toFixed(2)}</div>
-                    </div>
-                    <div class="monthly-stat">
-                        <h4>Transactions</h4>
-                        <div class="amount">${filteredTransactions.length}</div>
-                    </div>
-                </div>
-                
-                <h4 style="margin: 20px 0 15px 0; color: #333;">Transactions for ${months[month]} ${year}</h4>
-                ${filteredTransactions.length === 0 ? 
-                    '<p style="text-align: center; color: #666; padding: 20px;">No transactions for this period.</p>' :
-                    filteredTransactions.map(transaction => {
-                        const card = cards.find(c => c.id === transaction.cardId);
-                        const cardName = card ? card.name : 'Deleted Card';
-                        const amountClass = transaction.type === 'expense' ? 'expense' : 'payment';
-                        const amountSign = transaction.type === 'expense' ? '-' : '+';
-                        
-                        return `
-                            <div class="transaction-item">
-                                <div class="transaction-info">
-                                    <div class="transaction-date">${transaction.date}</div>
-                                    <div class="transaction-description">${transaction.description}</div>
-                                    <div class="transaction-card">${cardName}</div>
-                                </div>
-                                <div class="transaction-amount ${amountClass}">
-                                    ${amountSign}₹${transaction.amount.toFixed(2)}
-                                </div>
-                            </div>
-                        `;
-                    }).join('')
-                }
-            `;
-
-            // Update monthly chart
-            renderMonthlyChart();
-        }
-
-        function renderMonthlyChart() {
-            const chartContainer = document.getElementById('monthlyChart');
-            const currentYear = new Date().getFullYear();
-            const months = [
-                'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-            ];
-
-            // Calculate monthly expenses for the current year
-            const monthlyData = [];
-            let maxAmount = 0;
-
-            for (let i = 0; i < 12; i++) {
-                const monthExpenses = transactions
-                    .filter(t => t.type === 'expense' && t.fullDate && 
-                            t.fullDate.getFullYear() === currentYear && 
-                            t.fullDate.getMonth() === i)
-                    .reduce((sum, t) => sum + t.amount, 0);
-                
-                monthlyData.push({
-                    month: months[i],
-                    amount: monthExpenses
-                });
-                
-                if (monthExpenses > maxAmount) {
-                    maxAmount = monthExpenses;
-                }
-            }
-
-            if (maxAmount === 0) {
-                chartContainer.innerHTML = '<div style="text-align: center; color: #666;">Add some transactions to see your monthly spending chart</div>';
-                return;
-            }
-
-            chartContainer.innerHTML = `
-                <h4 style="margin-bottom: 20px; text-align: center; color: #333;">Monthly Expenses ${currentYear}</h4>
-                ${monthlyData.map(data => `
-                    <div class="chart-bar">
-                        <div class="chart-month">${data.month}</div>
-                        <div class="chart-bar-fill">
-                            <div class="chart-bar-inner" style="width: ${(data.amount / maxAmount) * 100}%"></div>
-                        </div>
-                        <div class="chart-amount">₹${data.amount.toFixed(0)}</div>
-                    </div>
-                `).join('')}
-            `;
-        }
-
-        function updateCardSelects() {
-            const transactionSelect = document.getElementById('transactionCard');
-            transactionSelect.innerHTML = '<option value="">Select a card</option>';
-            
-            cards.forEach(card => {
-                transactionSelect.innerHTML += `<option value="${card.id}">${card.name}</option>`;
-            });
-
-            // Also update the card filter
-            const filterSelect = document.getElementById('cardFilter');
-            filterSelect.innerHTML = '<option value="">All Cards</option>';
-            cards.forEach(card => {
-                filterSelect.innerHTML += `<option value="${card.id}">${card.name}</option>`;
-            });
-        }
-    </script>
-</body>
-</html>
+            document.getElementById('totalBalance').textContent = `₹${totalBalance.toLocaleString('en-IN', {minimumFractionDigits:
