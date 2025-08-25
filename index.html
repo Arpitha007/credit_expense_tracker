@@ -893,4 +893,317 @@
             alert('Credit card added successfully!');
         }
 
-        function removeC
+        function removeCreditCard(cardId) {
+            const card = creditCards.find(c => c.id === cardId);
+            const hasExpenses = expenses.some(e => e.creditCard === card.name);
+            const hasEMIs = emis.some(e => e.creditCard === card.name);
+            
+            if (hasExpenses || hasEMIs) {
+                if (!confirm(`This card has ${hasExpenses ? 'expenses' : ''}${hasExpenses && hasEMIs ? ' and ' : ''}${hasEMIs ? 'EMIs' : ''}. Remove anyway?`)) {
+                    return;
+                }
+            }
+            
+            creditCards = creditCards.filter(c => c.id !== cardId);
+            saveUserData();
+            populateCreditCardDropdowns();
+            displayCreditCards();
+            displayExpenses();
+        }
+
+        function addEMI() {
+            const description = document.getElementById('emiDescription').value.trim();
+            const amount = parseFloat(document.getElementById('emiAmount').value);
+            const startDate = document.getElementById('emiStartDate').value;
+            const tenure = parseInt(document.getElementById('emiTenure').value);
+            const creditCard = document.getElementById('emiCard').value;
+            
+            if (!description || !amount || !startDate || !tenure || !creditCard) {
+                alert('Please fill in all EMI fields');
+                return;
+            }
+            
+            if (amount <= 0) {
+                alert('Please enter a valid EMI amount greater than 0');
+                return;
+            }
+            
+            const newEMI = {
+                id: Date.now(),
+                description: description,
+                amount: amount,
+                startDate: startDate,
+                tenure: tenure,
+                creditCard: creditCard,
+                createdAt: new Date().toISOString()
+            };
+            
+            emis.push(newEMI);
+            saveUserData();
+            displayEMIs();
+            updateStats();
+            
+            // Reset form
+            document.getElementById('emiDescription').value = '';
+            document.getElementById('emiAmount').value = '';
+            document.getElementById('emiStartDate').valueAsDate = new Date();
+            document.getElementById('emiTenure').value = '';
+            document.getElementById('emiCard').value = '';
+            
+            alert('EMI added successfully!');
+        }
+
+        function removeEMI(emiId) {
+            if (confirm('Remove this EMI?')) {
+                emis = emis.filter(emi => emi.id !== emiId);
+                saveUserData();
+                displayEMIs();
+                updateStats();
+            }
+        }
+
+        function removeExpense(expenseId) {
+            if (confirm('Remove this expense?')) {
+                expenses = expenses.filter(expense => expense.id !== expenseId);
+                saveUserData();
+                displayExpenses();
+                updateStats();
+            }
+        }
+
+        function displayCreditCards() {
+            const cardsList = document.getElementById('cardsList');
+            
+            if (creditCards.length === 0) {
+                cardsList.innerHTML = '<div class="no-data">No credit cards added yet.</div>';
+                return;
+            }
+
+            let html = '';
+            creditCards.forEach(card => {
+                const expenseCount = expenses.filter(e => e.creditCard === card.name).length;
+                const totalAmount = expenses.filter(e => e.creditCard === card.name)
+                    .reduce((sum, e) => sum + e.amount, 0);
+
+                html += `
+                    <div class="card-item">
+                        <div>
+                            <div class="card-header">
+                                <strong>${card.name}</strong>
+                            </div>
+                            <div class="expense-details">
+                                ${expenseCount} transactions • ₹${totalAmount.toFixed(2)}
+                            </div>
+                        </div>
+                        <button class="delete-btn" onclick="removeCreditCard(${card.id})">Remove</button>
+                    </div>
+                `;
+            });
+
+            cardsList.innerHTML = html;
+            populateCreditCardDropdowns();
+        }
+
+        function displayEMIs() {
+            const emiList = document.getElementById('emiList');
+            
+            if (emis.length === 0) {
+                emiList.innerHTML = '<div class="no-data">No EMIs added yet.</div>';
+                return;
+            }
+
+            let html = '';
+            emis.forEach(emi => {
+                const startDate = new Date(emi.startDate);
+                const currentDate = new Date();
+                const monthsElapsed = Math.max(0, (currentDate.getFullYear() - startDate.getFullYear()) * 12 + (currentDate.getMonth() - startDate.getMonth()));
+                const monthsRemaining = Math.max(0, emi.tenure - monthsElapsed);
+                const progressPercentage = Math.min(100, (monthsElapsed / emi.tenure) * 100);
+
+                html += `
+                    <div class="emi-item">
+                        <div class="emi-header">
+                            <div>
+                                <div class="emi-amount">₹${emi.amount.toFixed(2)}/month</div>
+                                <strong>${emi.description}</strong>
+                            </div>
+                            <button class="delete-btn" onclick="removeEMI(${emi.id})">Remove</button>
+                        </div>
+                        <div class="emi-details">
+                            Card: ${emi.creditCard} • ${monthsRemaining} months remaining
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progressPercentage}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            emiList.innerHTML = html;
+        }
+
+        function displayExpenses() {
+            const expensesList = document.getElementById('expensesList');
+            const filterMonth = document.getElementById('filterMonth').value;
+            const filterCategory = document.getElementById('filterCategory').value;
+            const filterCard = document.getElementById('filterCard').value;
+
+            let filteredExpenses = expenses.filter(expense => {
+                const expenseDate = new Date(expense.date);
+                const monthYear = `${expenseDate.getFullYear()}-${String(expenseDate.getMonth() + 1).padStart(2, '0')}`;
+                
+                return (!filterMonth || monthYear === filterMonth) &&
+                       (!filterCategory || expense.category === filterCategory) &&
+                       (!filterCard || expense.creditCard === filterCard);
+            });
+
+            if (filteredExpenses.length === 0) {
+                expensesList.innerHTML = '<div class="no-data">No expenses match your filters.</div>';
+                return;
+            }
+
+            let html = '';
+            filteredExpenses.forEach(expense => {
+                html += `
+                    <div class="expense-item">
+                        <div class="expense-header">
+                            <div>
+                                <div class="expense-amount">₹${expense.amount.toFixed(2)}</div>
+                                <div>
+                                    <span class="expense-category">${expense.category}</span>
+                                    <span class="expense-card">${expense.creditCard}</span>
+                                </div>
+                            </div>
+                            <button class="delete-btn" onclick="removeExpense(${expense.id})">Delete</button>
+                        </div>
+                        <div class="expense-details">
+                            <strong>${expense.merchant}</strong>
+                            ${expense.description ? `• ${expense.description}` : ''}
+                            <br><small>${new Date(expense.date).toLocaleDateString()}</small>
+                        </div>
+                    </div>
+                `;
+            });
+
+            expensesList.innerHTML = html;
+        }
+
+        function updateStats() {
+            const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+            const currentMonth = new Date();
+            const monthlyExpenses = expenses.filter(expense => {
+                const expenseDate = new Date(expense.date);
+                return expenseDate.getMonth() === currentMonth.getMonth() && 
+                       expenseDate.getFullYear() === currentMonth.getFullYear();
+            }).reduce((sum, expense) => sum + expense.amount, 0);
+
+            const monthlyEMI = emis.reduce((sum, emi) => sum + emi.amount, 0);
+
+            document.getElementById('totalExpenses').textContent = `₹${totalExpenses.toFixed(2)}`;
+            document.getElementById('monthlyExpenses').textContent = `₹${monthlyExpenses.toFixed(2)}`;
+            document.getElementById('monthlyEMI').textContent = `₹${monthlyEMI.toFixed(2)}`;
+            document.getElementById('expenseCount').textContent = expenses.length;
+        }
+
+        function populateMonthFilter() {
+            const monthFilter = document.getElementById('filterMonth');
+            const months = new Set();
+            
+            expenses.forEach(expense => {
+                const date = new Date(expense.date);
+                const monthYear = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                months.add(monthYear);
+            });
+
+            const sortedMonths = Array.from(months).sort().reverse();
+            
+            let options = '<option value="">All Months</option>';
+            sortedMonths.forEach(month => {
+                const [year, monthNum] = month.split('-');
+                const monthName = new Date(year, monthNum - 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                options += `<option value="${month}">${monthName}</option>`;
+            });
+            
+            monthFilter.innerHTML = options;
+        }
+
+        function populateCreditCardDropdowns() {
+            const creditCardSelect = document.getElementById('creditCard');
+            const emiCardSelect = document.getElementById('emiCard');
+            const filterCardSelect = document.getElementById('filterCard');
+
+            let options = '<option value="">Select Card</option>';
+            creditCards.forEach(card => {
+                options += `<option value="${card.name}">${card.name}</option>`;
+            });
+
+            if (creditCardSelect) creditCardSelect.innerHTML = options;
+            if (emiCardSelect) emiCardSelect.innerHTML = options;
+
+            let filterOptions = '<option value="">All Cards</option>';
+            creditCards.forEach(card => {
+                filterOptions += `<option value="${card.name}">${card.name}</option>`;
+            });
+            if (filterCardSelect) filterCardSelect.innerHTML = filterOptions;
+        }
+
+        function exportData() {
+            if (expenses.length === 0) {
+                alert('No data to export');
+                return;
+            }
+
+            const data = {
+                user: currentUser,
+                expenses: expenses,
+                creditCards: creditCards,
+                emis: emis,
+                exportDate: new Date().toISOString()
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentUser}-credit-card-data.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function clearAllExpenses() {
+            if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
+                expenses = [];
+                creditCards = [];
+                emis = [];
+                nextId = 1;
+                
+                saveUserData();
+                displayExpenses();
+                displayCreditCards();
+                displayEMIs();
+                updateStats();
+                populateMonthFilter();
+                
+                alert('All data cleared successfully!');
+            }
+        }
+
+        // Handle Enter key for login forms
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const loginScreen = document.getElementById('loginScreen');
+                if (!loginScreen.classList.contains('hidden')) {
+                    const loginForm = document.getElementById('loginForm');
+                    const registerForm = document.getElementById('registerForm');
+                    
+                    if (!loginForm.classList.contains('hidden')) {
+                        login();
+                    } else if (!registerForm.classList.contains('hidden')) {
+                        register();
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
