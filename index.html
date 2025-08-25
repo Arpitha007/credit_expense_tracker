@@ -28,6 +28,20 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
 
+        .login-container {
+            max-width: 400px;
+            margin: 50px auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
         h1 {
             text-align: center;
             color: #333;
@@ -37,6 +51,39 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+        }
+
+        .user-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-welcome {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
         }
 
         .dashboard {
@@ -282,6 +329,53 @@
             transition: width 0.3s ease;
         }
 
+        .error-message {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, #00b894, #00a085);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .login-tabs {
+            display: flex;
+            margin-bottom: 20px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 8px;
+            padding: 4px;
+        }
+
+        .login-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            background: transparent;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .login-tab.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
         @media (max-width: 600px) {
             .expense-row, .emi-row {
                 grid-template-columns: 1fr;
@@ -294,12 +388,67 @@
             .filter-row, .button-row {
                 grid-template-columns: 1fr;
             }
+
+            .user-info {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
         <h1>💳 Credit Card Tracker</h1>
+        
+        <div class="login-tabs">
+            <button class="login-tab active" onclick="showLoginTab()">Login</button>
+            <button class="login-tab" onclick="showRegisterTab()">Register</button>
+        </div>
+
+        <div id="errorMessage" class="error-message hidden"></div>
+        <div id="successMessage" class="success-message hidden"></div>
+
+        <!-- Login Form -->
+        <div id="loginForm">
+            <div class="form-group">
+                <label for="loginUsername">Username</label>
+                <input type="text" id="loginUsername" placeholder="Enter your username" required>
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" placeholder="Enter your password" required>
+            </div>
+            <button onclick="login()">Login</button>
+        </div>
+
+        <!-- Register Form -->
+        <div id="registerForm" class="hidden">
+            <div class="form-group">
+                <label for="registerUsername">Username</label>
+                <input type="text" id="registerUsername" placeholder="Choose a username" required>
+            </div>
+            <div class="form-group">
+                <label for="registerPassword">Password</label>
+                <input type="password" id="registerPassword" placeholder="Choose a password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+            </div>
+            <button onclick="register()">Register</button>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" class="container hidden">
+        <h1>💳 Credit Card Tracker</h1>
+        
+        <div class="user-info">
+            <div class="user-welcome">Welcome, <span id="currentUser"></span>!</div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
         
         <div class="dashboard">
             <div class="stat-card">
@@ -449,6 +598,20 @@
     </div>
 
     <script>
+        // User Authentication System
+        let users = {
+            'arpbat': {
+                password: 'arpitha7',
+                data: {
+                    expenses: [],
+                    creditCards: [],
+                    emis: [],
+                    nextId: 1
+                }
+            }
+        };
+        
+        let currentUser = null;
         let expenses = [];
         let creditCards = [];
         let emis = [];
@@ -456,52 +619,252 @@
 
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('date').valueAsDate = new Date();
-            document.getElementById('emiStartDate').valueAsDate = new Date();
-            
-            populateMonthFilter();
-            displayCreditCards();
-            displayEMIs();
-            displayExpenses();
-            updateStats();
+            // Check if user is already logged in
+            const savedUser = getCookie('currentUser');
+            if (savedUser && users[savedUser]) {
+                currentUser = savedUser;
+                loadUserData();
+                showMainApp();
+            } else {
+                showLoginScreen();
+            }
         });
 
-        // Add expense form handler
-        document.getElementById('expenseForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const amount = parseFloat(document.getElementById('amount').value);
-            if (amount <= 0) {
-                alert('Please enter a valid amount greater than 0');
+        // Authentication Functions
+        function showLoginTab() {
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+            document.querySelectorAll('.login-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.login-tab')[0].classList.add('active');
+            hideMessages();
+        }
+
+        function showRegisterTab() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+            document.querySelectorAll('.login-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.login-tab')[1].classList.add('active');
+            hideMessages();
+        }
+
+        function login() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!username || !password) {
+                showError('Please enter both username and password');
                 return;
             }
-            
-            const expense = {
-                id: nextId++,
-                amount: amount,
-                category: document.getElementById('category').value,
-                creditCard: document.getElementById('creditCard').value,
-                date: document.getElementById('date').value,
-                merchant: document.getElementById('merchant').value.trim(),
-                description: document.getElementById('description').value.trim(),
-                timestamp: new Date().toISOString()
-            };
-            
-            expenses.unshift(expense);
-            displayExpenses();
-            updateStats();
-            
-            // Reset form
-            this.reset();
-            document.getElementById('date').valueAsDate = new Date();
-            
-            alert('Expense added successfully!');
-        });
 
-        // Filter handlers
-        document.getElementById('filterMonth').addEventListener('change', displayExpenses);
-        document.getElementById('filterCategory').addEventListener('change', displayExpenses);
-        document.getElementById('filterCard').addEventListener('change', displayExpenses);
+            if (!users[username]) {
+                showError('User not found');
+                return;
+            }
+
+            if (users[username].password !== password) {
+                showError('Invalid password');
+                return;
+            }
+
+            currentUser = username;
+            setCookie('currentUser', username, 30); // 30 days
+            loadUserData();
+            showMainApp();
+            showSuccess('Login successful!');
+        }
+
+        function register() {
+            const username = document.getElementById('registerUsername').value.trim();
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (!username || !password || !confirmPassword) {
+                showError('Please fill in all fields');
+                return;
+            }
+
+            if (username.length < 3) {
+                showError('Username must be at least 3 characters long');
+                return;
+            }
+
+            if (password.length < 4) {
+                showError('Password must be at least 4 characters long');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showError('Passwords do not match');
+                return;
+            }
+
+            if (users[username]) {
+                showError('Username already exists');
+                return;
+            }
+
+            // Create new user
+            users[username] = {
+                password: password,
+                data: {
+                    expenses: [],
+                    creditCards: [],
+                    emis: [],
+                    nextId: 1
+                }
+            };
+
+            showSuccess('Registration successful! You can now login.');
+            
+            // Clear form and switch to login
+            document.getElementById('registerForm').reset();
+            setTimeout(() => {
+                showLoginTab();
+            }, 1500);
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                saveUserData();
+                currentUser = null;
+                setCookie('currentUser', '', -1);
+                
+                // Clear form data
+                document.getElementById('loginUsername').value = '';
+                document.getElementById('loginPassword').value = '';
+                
+                showLoginScreen();
+                showSuccess('Logged out successfully!');
+            }
+        }
+
+        function loadUserData() {
+            if (currentUser && users[currentUser]) {
+                const userData = users[currentUser].data;
+                expenses = [...userData.expenses];
+                creditCards = [...userData.creditCards];
+                emis = [...userData.emis];
+                nextId = userData.nextId;
+                
+                document.getElementById('currentUser').textContent = currentUser;
+                
+                // Initialize dates and display data
+                document.getElementById('date').valueAsDate = new Date();
+                document.getElementById('emiStartDate').valueAsDate = new Date();
+                
+                populateMonthFilter();
+                displayCreditCards();
+                displayEMIs();
+                displayExpenses();
+                updateStats();
+            }
+        }
+
+        function saveUserData() {
+            if (currentUser && users[currentUser]) {
+                users[currentUser].data = {
+                    expenses: [...expenses],
+                    creditCards: [...creditCards],
+                    emis: [...emis],
+                    nextId: nextId
+                };
+            }
+        }
+
+        function showLoginScreen() {
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
+            hideMessages();
+        }
+
+        function showMainApp() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            hideMessages();
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.classList.remove('hidden');
+            document.getElementById('successMessage').classList.add('hidden');
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.classList.remove('hidden');
+            document.getElementById('errorMessage').classList.add('hidden');
+            
+            setTimeout(() => {
+                hideMessages();
+            }, 3000);
+        }
+
+        function hideMessages() {
+            document.getElementById('errorMessage').classList.add('hidden');
+            document.getElementById('successMessage').classList.add('hidden');
+        }
+
+        // Cookie functions
+        function setCookie(name, value, days) {
+            const expires = new Date();
+            expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+            document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+        }
+
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const ca = document.cookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        // Original App Functions (Modified to save data automatically)
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.getElementById('expenseForm')) {
+                document.getElementById('expenseForm').addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const amount = parseFloat(document.getElementById('amount').value);
+                    if (amount <= 0) {
+                        alert('Please enter a valid amount greater than 0');
+                        return;
+                    }
+                    
+                    const expense = {
+                        id: nextId++,
+                        amount: amount,
+                        category: document.getElementById('category').value,
+                        creditCard: document.getElementById('creditCard').value,
+                        date: document.getElementById('date').value,
+                        merchant: document.getElementById('merchant').value.trim(),
+                        description: document.getElementById('description').value.trim(),
+                        timestamp: new Date().toISOString()
+                    };
+                    
+                    expenses.unshift(expense);
+                    saveUserData();
+                    displayExpenses();
+                    updateStats();
+                    
+                    // Reset form
+                    this.reset();
+                    document.getElementById('date').valueAsDate = new Date();
+                    
+                    alert('Expense added successfully!');
+                });
+
+                // Filter handlers
+                document.getElementById('filterMonth').addEventListener('change', displayExpenses);
+                document.getElementById('filterCategory').addEventListener('change', displayExpenses);
+                document.getElementById('filterCard').addEventListener('change', displayExpenses);
+            }
+        });
 
         function addCreditCard() {
             const cardName = document.getElementById('newCardName').value.trim();
@@ -522,6 +885,7 @@
             };
             
             creditCards.push(newCard);
+            saveUserData();
             populateCreditCardDropdowns();
             displayCreditCards();
             
@@ -529,305 +893,4 @@
             alert('Credit card added successfully!');
         }
 
-        function removeCreditCard(cardId) {
-            const card = creditCards.find(c => c.id === cardId);
-            const hasExpenses = expenses.some(e => e.creditCard === card.name);
-            const hasEMIs = emis.some(e => e.creditCard === card.name);
-            
-            if (hasExpenses || hasEMIs) {
-                if (!confirm(`This card has ${hasExpenses ? 'expenses' : ''}${hasExpenses && hasEMIs ? ' and ' : ''}${hasEMIs ? 'EMIs' : ''}. Remove anyway?`)) {
-                    return;
-                }
-            }
-            
-            creditCards = creditCards.filter(c => c.id !== cardId);
-            populateCreditCardDropdowns();
-            displayCreditCards();
-            displayExpenses();
-        }
-
-        function addEMI() {
-            const description = document.getElementById('emiDescription').value.trim();
-            const amount = parseFloat(document.getElementById('emiAmount').value);
-            const startDate = document.getElementById('emiStartDate').value;
-            const tenure = parseInt(document.getElementById('emiTenure').value);
-            const creditCard = document.getElementById('emiCard').value;
-            
-            if (!description || !amount || !startDate || !tenure || !creditCard) {
-                alert('Please fill in all EMI fields');
-                return;
-            }
-            
-            if (amount <= 0) {
-                alert('Please enter a valid EMI amount greater than 0');
-                return;
-            }
-            
-            const newEMI = {
-                id: Date.now(),
-                description: description,
-                amount: amount,
-                startDate: startDate,
-                tenure: tenure,
-                creditCard: creditCard,
-                createdAt: new Date().toISOString()
-            };
-            
-            emis.push(newEMI);
-            displayEMIs();
-            updateStats();
-            
-            // Reset form
-            document.getElementById('emiDescription').value = '';
-            document.getElementById('emiAmount').value = '';
-            document.getElementById('emiStartDate').valueAsDate = new Date();
-            document.getElementById('emiTenure').value = '';
-            document.getElementById('emiCard').value = '';
-            
-            alert('EMI added successfully!');
-        }
-
-        function removeEMI(emiId) {
-            if (confirm('Remove this EMI?')) {
-                emis = emis.filter(emi => emi.id !== emiId);
-                displayEMIs();
-                updateStats();
-            }
-        }
-
-        function removeExpense(expenseId) {
-            if (confirm('Remove this expense?')) {
-                expenses = expenses.filter(expense => expense.id !== expenseId);
-                displayExpenses();
-                updateStats();
-            }
-        }
-
-        function displayCreditCards() {
-            const cardsList = document.getElementById('cardsList');
-            
-            if (creditCards.length === 0) {
-                cardsList.innerHTML = '<div class="no-data">No credit cards added yet.</div>';
-                return;
-            }
-
-            let html = '';
-            creditCards.forEach(card => {
-                const expenseCount = expenses.filter(e => e.creditCard === card.name).length;
-                const totalAmount = expenses.filter(e => e.creditCard === card.name)
-                    .reduce((sum, e) => sum + e.amount, 0);
-
-                html += `
-                    <div class="card-item">
-                        <div>
-                            <div class="card-header">
-                                <strong>${card.name}</strong>
-                            </div>
-                            <div class="expense-details">
-                                ${expenseCount} transactions • ₹${totalAmount.toFixed(2)}
-                            </div>
-                        </div>
-                        <button class="delete-btn" onclick="removeCreditCard(${card.id})">Remove</button>
-                    </div>
-                `;
-            });
-
-            cardsList.innerHTML = html;
-            populateCreditCardDropdowns();
-        }
-
-        function displayEMIs() {
-            const emiList = document.getElementById('emiList');
-            
-            if (emis.length === 0) {
-                emiList.innerHTML = '<div class="no-data">No EMIs added yet.</div>';
-                return;
-            }
-
-            let html = '';
-            emis.forEach(emi => {
-                const startDate = new Date(emi.startDate);
-                const currentDate = new Date();
-                const monthsElapsed = Math.max(0, (currentDate.getFullYear() - startDate.getFullYear()) * 12 + (currentDate.getMonth() - startDate.getMonth()));
-                const monthsRemaining = Math.max(0, emi.tenure - monthsElapsed);
-                const progressPercentage = Math.min(100, (monthsElapsed / emi.tenure) * 100);
-
-                html += `
-                    <div class="emi-item">
-                        <div class="emi-header">
-                            <div>
-                                <div class="emi-amount">₹${emi.amount.toFixed(2)}/month</div>
-                                <strong>${emi.description}</strong>
-                            </div>
-                            <button class="delete-btn" onclick="removeEMI(${emi.id})">Remove</button>
-                        </div>
-                        <div class="emi-details">
-                            Card: ${emi.creditCard} • ${monthsRemaining} months remaining
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: ${progressPercentage}%"></div>
-                        </div>
-                    </div>
-                `;
-            });
-
-            emiList.innerHTML = html;
-        }
-
-        function displayExpenses() {
-            const expensesList = document.getElementById('expensesList');
-            const filterMonth = document.getElementById('filterMonth').value;
-            const filterCategory = document.getElementById('filterCategory').value;
-            const filterCard = document.getElementById('filterCard').value;
-
-            let filteredExpenses = expenses.filter(expense => {
-                const expenseDate = new Date(expense.date);
-                const monthYear = `${expenseDate.getFullYear()}-${String(expenseDate.getMonth() + 1).padStart(2, '0')}`;
-                
-                return (!filterMonth || monthYear === filterMonth) &&
-                       (!filterCategory || expense.category === filterCategory) &&
-                       (!filterCard || expense.creditCard === filterCard);
-            });
-
-            if (filteredExpenses.length === 0) {
-                expensesList.innerHTML = '<div class="no-data">No expenses match your filters.</div>';
-                return;
-            }
-
-            let html = '';
-            filteredExpenses.forEach(expense => {
-                html += `
-                    <div class="expense-item">
-                        <div class="expense-header">
-                            <div>
-                                <div class="expense-amount">₹${expense.amount.toFixed(2)}</div>
-                                <div>
-                                    <span class="expense-category">${expense.category}</span>
-                                    <span class="expense-card">${expense.creditCard}</span>
-                                </div>
-                            </div>
-                            <button class="delete-btn" onclick="removeExpense(${expense.id})">Delete</button>
-                        </div>
-                        <div class="expense-details">
-                            <strong>${expense.merchant}</strong>
-                            ${expense.description ? `• ${expense.description}` : ''}
-                            <br><small>${new Date(expense.date).toLocaleDateString()}</small>
-                        </div>
-                    </div>
-                `;
-            });
-
-            expensesList.innerHTML = html;
-        }
-
-        function updateStats() {
-            const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
-            const currentMonth = new Date();
-            const monthlyExpenses = expenses.filter(expense => {
-                const expenseDate = new Date(expense.date);
-                return expenseDate.getMonth() === currentMonth.getMonth() && 
-                       expenseDate.getFullYear() === currentMonth.getFullYear();
-            }).reduce((sum, expense) => sum + expense.amount, 0);
-
-            const monthlyEMI = emis.reduce((sum, emi) => sum + emi.amount, 0);
-
-            document.getElementById('totalExpenses').textContent = `₹${totalExpenses.toFixed(2)}`;
-            document.getElementById('monthlyExpenses').textContent = `₹${monthlyExpenses.toFixed(2)}`;
-            document.getElementById('monthlyEMI').textContent = `₹${monthlyEMI.toFixed(2)}`;
-            document.getElementById('expenseCount').textContent = expenses.length;
-        }
-
-        function populateMonthFilter() {
-            const monthFilter = document.getElementById('filterMonth');
-            const months = new Set();
-            
-            expenses.forEach(expense => {
-                const date = new Date(expense.date);
-                const monthYear = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-                months.add(monthYear);
-            });
-
-            const sortedMonths = Array.from(months).sort().reverse();
-            
-            let options = '<option value="">All Months</option>';
-            sortedMonths.forEach(month => {
-                const [year, monthNum] = month.split('-');
-                const monthName = new Date(year, monthNum - 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-                options += `<option value="${month}">${monthName}</option>`;
-            });
-            
-            monthFilter.innerHTML = options;
-        }
-
-        function populateCreditCardDropdowns() {
-            const creditCardSelect = document.getElementById('creditCard');
-            const emiCardSelect = document.getElementById('emiCard');
-            const filterCardSelect = document.getElementById('filterCard');
-
-            let options = '<option value="">Select Card</option>';
-            creditCards.forEach(card => {
-                options += `<option value="${card.name}">${card.name}</option>`;
-            });
-
-            creditCardSelect.innerHTML = options;
-            emiCardSelect.innerHTML = options;
-
-            let filterOptions = '<option value="">All Cards</option>';
-            creditCards.forEach(card => {
-                filterOptions += `<option value="${card.name}">${card.name}</option>`;
-            });
-            filterCardSelect.innerHTML = filterOptions;
-        }
-
-        function exportData() {
-            if (expenses.length === 0) {
-                alert('No data to export');
-                return;
-            }
-
-            const data = {
-                expenses: expenses,
-                creditCards: creditCards,
-                emis: emis,
-                exportDate: new Date().toISOString()
-            };
-
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'credit-card-data.json';
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        function clearAllExpenses() {
-            if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
-                expenses = [];
-                creditCards = [];
-                emis = [];
-                nextId = 1;
-                
-                displayExpenses();
-                displayCreditCards();
-                displayEMIs();
-                updateStats();
-                populateMonthFilter();
-                
-                alert('All data cleared successfully!');
-            }
-        }
-
-        function showSuccessAnimation(button, message) {
-            const originalText = button.textContent;
-            button.textContent = message;
-            button.style.background = 'linear-gradient(135deg, #00b894, #00a085)';
-            
-            setTimeout(() => {
-                button.textContent = originalText;
-                button.style.background = 'linear-gradient(135deg, #667eea, #764ba2)';
-            }, 1500);
-        }
-    </script>
-</body>
-</html>
+        function removeC
