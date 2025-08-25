@@ -598,227 +598,401 @@
     </div>
 
     <script>
-        // User Authentication System with Persistent Storage
+        // Global variables
+        let users = {}; // Fixed: Added missing users declaration
         let currentUser = null;
         let expenses = [];
         let creditCards = [];
         let emis = [];
         let nextId = 1;
 
-        // Load users from localStorage or create default
-        function loadUsersFromStorage() {
-            const savedUsers = localStorage.getItem('creditCardTrackerUsers');
-            if (savedUsers) {
-                return JSON.parse(savedUsers);
-            } else {
-                // Create default user
-                const defaultUsers = {
-                    'arpbat': {
-                        password: 'arpitha7',
-                        data: {
-                            expenses: [],
-                            creditCards: [],
-                            emis: [],
-                            nextId: 1
-                        }
-                    }
-                };
-                localStorage.setItem('creditCardTrackerUsers', JSON.stringify(defaultUsers));
-                return defaultUsers;
-            }
-        }
-
-        // Save users to localStorage
-        function saveUsersToStorage(users) {
-            localStorage.setItem('creditCardTrackerUsers', JSON.stringify(users));
-        }
-
-        // Get users object
-        function getUsers() {
-            return loadUsersFromStorage();
-        }
-
-        // Initialize the app
+        // Initialize the app when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
-            // Load users from storage
-            const users = getUsers();
-            
-            // Check if user is already logged in
-            const savedUser = getCookie('currentUser');
-            if (savedUser && users[savedUser]) {
-                currentUser = savedUser;
-                loadUserData();
-                showMainApp();
-            } else {
-                showLoginScreen();
-            }
+            initializeApp();
+            setupEventListeners();
         });
 
-        // Authentication Functions
-        function showLoginTab() {
-            document.getElementById('loginForm').classList.remove('hidden');
-            document.getElementById('registerForm').classList.add('hidden');
-            document.querySelectorAll('.login-tab').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.login-tab')[0].classList.add('active');
-            hideMessages();
-        }
-
-        function showRegisterTab() {
-            document.getElementById('loginForm').classList.add('hidden');
-            document.getElementById('registerForm').classList.remove('hidden');
-            document.querySelectorAll('.login-tab').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.login-tab')[1].classList.add('active');
-            hideMessages();
-        }
-
-        function login() {
-            const username = document.getElementById('loginUsername').value.trim();
-            const password = document.getElementById('loginPassword').value;
-
-            if (!username || !password) {
-                showError('Please enter both username and password');
-                return;
-            }
-
-            if (!users[username]) {
-                showError('User not found');
-                return;
-            }
-
-            if (users[username].password !== password) {
-                showError('Invalid password');
-                return;
-            }
-
-            currentUser = username;
-            setCookie('currentUser', username, 30); // 30 days
-            loadUserData();
-            showMainApp();
-            showSuccess('Login successful!');
-        }
-
-        function register() {
-            const username = document.getElementById('registerUsername').value.trim();
-            const password = document.getElementById('registerPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-
-            if (!username || !password || !confirmPassword) {
-                showError('Please fill in all fields');
-                return;
-            }
-
-            if (username.length < 3) {
-                showError('Username must be at least 3 characters long');
-                return;
-            }
-
-            if (password.length < 4) {
-                showError('Password must be at least 4 characters long');
-                return;
-            }
-
-            if (password !== confirmPassword) {
-                showError('Passwords do not match');
-                return;
-            }
-
-            if (users[username]) {
-                showError('Username already exists');
-                return;
-            }
-
-            // Create new user
-            users[username] = {
-                password: password,
-                data: {
-                    expenses: [],
-                    creditCards: [],
-                    emis: [],
-                    nextId: 1
+        // Initialize the application
+        function initializeApp() {
+            try {
+                // Load users from storage
+                users = loadUsersFromStorage();
+                
+                // Check if user is already logged in
+                const savedUser = getCookie('currentUser');
+                if (savedUser && users[savedUser]) {
+                    currentUser = savedUser;
+                    loadUserData();
+                    showMainApp();
+                } else {
+                    showLoginScreen();
                 }
-            };
-
-            showSuccess('Registration successful! You can now login.');
-            
-            // Clear form and switch to login
-            document.getElementById('registerForm').reset();
-            setTimeout(() => {
-                showLoginTab();
-            }, 1500);
+            } catch (error) {
+                console.error('Error initializing app:', error);
+                showError('Failed to initialize application');
+                showLoginScreen();
+            }
         }
 
-        function logout() {
-            if (confirm('Are you sure you want to logout?')) {
+        // Setup all event listeners
+        function setupEventListeners() {
+            // Expense form submission
+            const expenseForm = document.getElementById('expenseForm');
+            if (expenseForm) {
+                expenseForm.addEventListener('submit', handleExpenseSubmit);
+            }
+
+            // Filter handlers
+            const filterMonth = document.getElementById('filterMonth');
+            const filterCategory = document.getElementById('filterCategory');
+            const filterCard = document.getElementById('filterCard');
+            
+            if (filterMonth) filterMonth.addEventListener('change', displayExpenses);
+            if (filterCategory) filterCategory.addEventListener('change', displayExpenses);
+            if (filterCard) filterCard.addEventListener('change', displayExpenses);
+
+            // Handle Enter key for login forms
+            document.addEventListener('keypress', handleKeyPress);
+        }
+
+        // Handle expense form submission
+        function handleExpenseSubmit(e) {
+            e.preventDefault();
+            
+            try {
+                const amount = parseFloat(document.getElementById('amount').value);
+                const category = document.getElementById('category').value;
+                const creditCard = document.getElementById('creditCard').value;
+                const date = document.getElementById('date').value;
+                const merchant = document.getElementById('merchant').value.trim();
+                const description = document.getElementById('description').value.trim();
+
+                // Validation
+                if (amount <= 0) {
+                    alert('Please enter a valid amount greater than 0');
+                    return;
+                }
+
+                if (!category || !creditCard || !date || !merchant) {
+                    alert('Please fill in all required fields');
+                    return;
+                }
+                
+                const expense = {
+                    id: nextId++,
+                    amount: amount,
+                    category: category,
+                    creditCard: creditCard,
+                    date: date,
+                    merchant: merchant,
+                    description: description,
+                    timestamp: new Date().toISOString()
+                };
+                
+                expenses.unshift(expense);
                 saveUserData();
-                currentUser = null;
-                setCookie('currentUser', '', -1);
+                displayExpenses();
+                updateStats();
+                populateMonthFilter(); // Update month filter with new data
                 
-                // Clear form data
-                document.getElementById('loginUsername').value = '';
-                document.getElementById('loginPassword').value = '';
+                // Reset form
+                e.target.reset();
+                document.getElementById('date').valueAsDate = new Date();
                 
-                showLoginScreen();
-                showSuccess('Logged out successfully!');
+                showSuccess('Expense added successfully!');
+            } catch (error) {
+                console.error('Error adding expense:', error);
+                showError('Failed to add expense');
+            }
+        }
+
+        // Handle key press events
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') {
+                const loginScreen = document.getElementById('loginScreen');
+                if (loginScreen && !loginScreen.classList.contains('hidden')) {
+                    const loginForm = document.getElementById('loginForm');
+                    const registerForm = document.getElementById('registerForm');
+                    
+                    if (loginForm && !loginForm.classList.contains('hidden')) {
+                        login();
+                    } else if (registerForm && !registerForm.classList.contains('hidden')) {
+                        register();
+                    }
+                }
+            }
+        }
+
+        // User data management functions
+        function loadUsersFromStorage() {
+            try {
+                const savedUsers = window.localStorage.getItem('creditCardTrackerUsers');
+                if (savedUsers) {
+                    return JSON.parse(savedUsers);
+                } else {
+                    // Create default user
+                    const defaultUsers = {
+                        'arpbat': {
+                            password: 'arpitha7',
+                            data: {
+                                expenses: [],
+                                creditCards: [],
+                                emis: [],
+                                nextId: 1
+                            }
+                        }
+                    };
+                    saveUsersToStorage(defaultUsers);
+                    return defaultUsers;
+                }
+            } catch (error) {
+                console.error('Error loading users from storage:', error);
+                return {};
+            }
+        }
+
+        function saveUsersToStorage(usersData) {
+            try {
+                window.localStorage.setItem('creditCardTrackerUsers', JSON.stringify(usersData));
+            } catch (error) {
+                console.error('Error saving users to storage:', error);
+                showError('Failed to save user data');
             }
         }
 
         function loadUserData() {
-            if (currentUser && users[currentUser]) {
-                const userData = users[currentUser].data;
-                expenses = [...userData.expenses];
-                creditCards = [...userData.creditCards];
-                emis = [...userData.emis];
-                nextId = userData.nextId;
-                
-                document.getElementById('currentUser').textContent = currentUser;
-                
-                // Initialize dates and display data
-                document.getElementById('date').valueAsDate = new Date();
-                document.getElementById('emiStartDate').valueAsDate = new Date();
-                
-                populateMonthFilter();
-                displayCreditCards();
-                displayEMIs();
-                displayExpenses();
-                updateStats();
+            try {
+                if (currentUser && users[currentUser]) {
+                    const userData = users[currentUser].data;
+                    expenses = [...(userData.expenses || [])];
+                    creditCards = [...(userData.creditCards || [])];
+                    emis = [...(userData.emis || [])];
+                    nextId = userData.nextId || 1;
+                    
+                    const currentUserElement = document.getElementById('currentUser');
+                    if (currentUserElement) {
+                        currentUserElement.textContent = currentUser;
+                    }
+                    
+                    // Initialize dates
+                    const dateInput = document.getElementById('date');
+                    const emiStartDateInput = document.getElementById('emiStartDate');
+                    if (dateInput) dateInput.valueAsDate = new Date();
+                    if (emiStartDateInput) emiStartDateInput.valueAsDate = new Date();
+                    
+                    // Display data
+                    populateMonthFilter();
+                    displayCreditCards();
+                    displayEMIs();
+                    displayExpenses();
+                    updateStats();
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                showError('Failed to load user data');
             }
         }
 
         function saveUserData() {
-            if (currentUser && users[currentUser]) {
-                users[currentUser].data = {
-                    expenses: [...expenses],
-                    creditCards: [...creditCards],
-                    emis: [...emis],
-                    nextId: nextId
-                };
+            try {
+                if (currentUser && users[currentUser]) {
+                    users[currentUser].data = {
+                        expenses: [...expenses],
+                        creditCards: [...creditCards],
+                        emis: [...emis],
+                        nextId: nextId
+                    };
+                    saveUsersToStorage(users);
+                }
+            } catch (error) {
+                console.error('Error saving user data:', error);
+                showError('Failed to save user data');
             }
         }
 
+        // Authentication functions
+        function showLoginTab() {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const loginTabs = document.querySelectorAll('.login-tab');
+            
+            if (loginForm) loginForm.classList.remove('hidden');
+            if (registerForm) registerForm.classList.add('hidden');
+            
+            loginTabs.forEach(tab => tab.classList.remove('active'));
+            if (loginTabs[0]) loginTabs[0].classList.add('active');
+            
+            hideMessages();
+        }
+
+        function showRegisterTab() {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const loginTabs = document.querySelectorAll('.login-tab');
+            
+            if (loginForm) loginForm.classList.add('hidden');
+            if (registerForm) registerForm.classList.remove('hidden');
+            
+            loginTabs.forEach(tab => tab.classList.remove('active'));
+            if (loginTabs[1]) loginTabs[1].classList.add('active');
+            
+            hideMessages();
+        }
+
+        function login() {
+            try {
+                const username = document.getElementById('loginUsername').value.trim();
+                const password = document.getElementById('loginPassword').value;
+
+                if (!username || !password) {
+                    showError('Please enter both username and password');
+                    return;
+                }
+
+                if (!users[username]) {
+                    showError('User not found');
+                    return;
+                }
+
+                if (users[username].password !== password) {
+                    showError('Invalid password');
+                    return;
+                }
+
+                currentUser = username;
+                setCookie('currentUser', username, 30); // 30 days
+                loadUserData();
+                showMainApp();
+                showSuccess('Login successful!');
+            } catch (error) {
+                console.error('Error during login:', error);
+                showError('Login failed');
+            }
+        }
+
+        function register() {
+            try {
+                const username = document.getElementById('registerUsername').value.trim();
+                const password = document.getElementById('registerPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                if (!username || !password || !confirmPassword) {
+                    showError('Please fill in all fields');
+                    return;
+                }
+
+                if (username.length < 3) {
+                    showError('Username must be at least 3 characters long');
+                    return;
+                }
+
+                if (password.length < 4) {
+                    showError('Password must be at least 4 characters long');
+                    return;
+                }
+
+                if (password !== confirmPassword) {
+                    showError('Passwords do not match');
+                    return;
+                }
+
+                if (users[username]) {
+                    showError('Username already exists');
+                    return;
+                }
+
+                // Create new user
+                users[username] = {
+                    password: password,
+                    data: {
+                        expenses: [],
+                        creditCards: [],
+                        emis: [],
+                        nextId: 1
+                    }
+                };
+
+                saveUsersToStorage(users);
+                showSuccess('Registration successful! You can now login.');
+                
+                // Clear form and switch to login
+                const registerForm = document.getElementById('registerForm');
+                if (registerForm) registerForm.reset();
+                
+                setTimeout(() => {
+                    showLoginTab();
+                }, 1500);
+            } catch (error) {
+                console.error('Error during registration:', error);
+                showError('Registration failed');
+            }
+        }
+
+        function logout() {
+            try {
+                if (confirm('Are you sure you want to logout?')) {
+                    saveUserData();
+                    currentUser = null;
+                    setCookie('currentUser', '', -1);
+                    
+                    // Clear form data
+                    const loginUsername = document.getElementById('loginUsername');
+                    const loginPassword = document.getElementById('loginPassword');
+                    if (loginUsername) loginUsername.value = '';
+                    if (loginPassword) loginPassword.value = '';
+                    
+                    showLoginScreen();
+                    showSuccess('Logged out successfully!');
+                }
+            } catch (error) {
+                console.error('Error during logout:', error);
+                showError('Logout failed');
+            }
+        }
+
+        // UI display functions
         function showLoginScreen() {
-            document.getElementById('loginScreen').classList.remove('hidden');
-            document.getElementById('mainApp').classList.add('hidden');
+            const loginScreen = document.getElementById('loginScreen');
+            const mainApp = document.getElementById('mainApp');
+            
+            if (loginScreen) loginScreen.classList.remove('hidden');
+            if (mainApp) mainApp.classList.add('hidden');
             hideMessages();
         }
 
         function showMainApp() {
-            document.getElementById('loginScreen').classList.add('hidden');
-            document.getElementById('mainApp').classList.remove('hidden');
+            const loginScreen = document.getElementById('loginScreen');
+            const mainApp = document.getElementById('mainApp');
+            
+            if (loginScreen) loginScreen.classList.add('hidden');
+            if (mainApp) mainApp.classList.remove('hidden');
             hideMessages();
         }
 
         function showError(message) {
             const errorDiv = document.getElementById('errorMessage');
-            errorDiv.textContent = message;
-            errorDiv.classList.remove('hidden');
-            document.getElementById('successMessage').classList.add('hidden');
+            const successDiv = document.getElementById('successMessage');
+            
+            if (errorDiv) {
+                errorDiv.textContent = message;
+                errorDiv.classList.remove('hidden');
+            }
+            if (successDiv) {
+                successDiv.classList.add('hidden');
+            }
         }
 
         function showSuccess(message) {
             const successDiv = document.getElementById('successMessage');
-            successDiv.textContent = message;
-            successDiv.classList.remove('hidden');
-            document.getElementById('errorMessage').classList.add('hidden');
+            const errorDiv = document.getElementById('errorMessage');
+            
+            if (successDiv) {
+                successDiv.textContent = message;
+                successDiv.classList.remove('hidden');
+            }
+            if (errorDiv) {
+                errorDiv.classList.add('hidden');
+            }
             
             setTimeout(() => {
                 hideMessages();
@@ -826,408 +1000,466 @@
         }
 
         function hideMessages() {
-            document.getElementById('errorMessage').classList.add('hidden');
-            document.getElementById('successMessage').classList.add('hidden');
+            const errorDiv = document.getElementById('errorMessage');
+            const successDiv = document.getElementById('successMessage');
+            
+            if (errorDiv) errorDiv.classList.add('hidden');
+            if (successDiv) successDiv.classList.add('hidden');
         }
 
         // Cookie functions
         function setCookie(name, value, days) {
-            const expires = new Date();
-            expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
-            document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+            try {
+                const expires = new Date();
+                expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+                document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+            } catch (error) {
+                console.error('Error setting cookie:', error);
+            }
         }
 
         function getCookie(name) {
-            const nameEQ = name + "=";
-            const ca = document.cookie.split(';');
-            for (let i = 0; i < ca.length; i++) {
-                let c = ca[i];
-                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            try {
+                const nameEQ = name + "=";
+                const ca = document.cookie.split(';');
+                for (let i = 0; i < ca.length; i++) {
+                    let c = ca[i];
+                    while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+                }
+                return null;
+            } catch (error) {
+                console.error('Error getting cookie:', error);
+                return null;
             }
-            return null;
         }
 
-        // Original App Functions (Modified to save data automatically)
-        document.addEventListener('DOMContentLoaded', function() {
-            if (document.getElementById('expenseForm')) {
-                document.getElementById('expenseForm').addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    
-                    const amount = parseFloat(document.getElementById('amount').value);
-                    if (amount <= 0) {
-                        alert('Please enter a valid amount greater than 0');
-                        return;
-                    }
-                    
-                    const expense = {
-                        id: nextId++,
-                        amount: amount,
-                        category: document.getElementById('category').value,
-                        creditCard: document.getElementById('creditCard').value,
-                        date: document.getElementById('date').value,
-                        merchant: document.getElementById('merchant').value.trim(),
-                        description: document.getElementById('description').value.trim(),
-                        timestamp: new Date().toISOString()
-                    };
-                    
-                    expenses.unshift(expense);
-                    saveUserData();
-                    displayExpenses();
-                    updateStats();
-                    
-                    // Reset form
-                    this.reset();
-                    document.getElementById('date').valueAsDate = new Date();
-                    
-                    alert('Expense added successfully!');
-                });
-
-                // Filter handlers
-                document.getElementById('filterMonth').addEventListener('change', displayExpenses);
-                document.getElementById('filterCategory').addEventListener('change', displayExpenses);
-                document.getElementById('filterCard').addEventListener('change', displayExpenses);
-            }
-        });
-
+        // Credit card management functions
         function addCreditCard() {
-            const cardName = document.getElementById('newCardName').value.trim();
-            if (!cardName) {
-                alert('Please enter a credit card name');
-                return;
+            try {
+                const cardName = document.getElementById('newCardName').value.trim();
+                if (!cardName) {
+                    alert('Please enter a credit card name');
+                    return;
+                }
+                
+                if (creditCards.some(card => card.name.toLowerCase() === cardName.toLowerCase())) {
+                    alert('This credit card already exists');
+                    return;
+                }
+                
+                const newCard = {
+                    id: Date.now(),
+                    name: cardName,
+                    createdAt: new Date().toISOString()
+                };
+                
+                creditCards.push(newCard);
+                saveUserData();
+                populateCreditCardDropdowns();
+                displayCreditCards();
+                
+                document.getElementById('newCardName').value = '';
+                showSuccess('Credit card added successfully!');
+            } catch (error) {
+                console.error('Error adding credit card:', error);
+                showError('Failed to add credit card');
             }
-            
-            if (creditCards.some(card => card.name.toLowerCase() === cardName.toLowerCase())) {
-                alert('This credit card already exists');
-                return;
-            }
-            
-            const newCard = {
-                id: Date.now(),
-                name: cardName,
-                createdAt: new Date().toISOString()
-            };
-            
-            creditCards.push(newCard);
-            saveUserData();
-            populateCreditCardDropdowns();
-            displayCreditCards();
-            
-            document.getElementById('newCardName').value = '';
-            alert('Credit card added successfully!');
         }
 
         function removeCreditCard(cardId) {
-            const card = creditCards.find(c => c.id === cardId);
-            const hasExpenses = expenses.some(e => e.creditCard === card.name);
-            const hasEMIs = emis.some(e => e.creditCard === card.name);
-            
-            if (hasExpenses || hasEMIs) {
-                if (!confirm(`This card has ${hasExpenses ? 'expenses' : ''}${hasExpenses && hasEMIs ? ' and ' : ''}${hasEMIs ? 'EMIs' : ''}. Remove anyway?`)) {
+            try {
+                const card = creditCards.find(c => c.id === cardId);
+                if (!card) {
+                    alert('Card not found');
                     return;
                 }
-            }
-            
-            creditCards = creditCards.filter(c => c.id !== cardId);
-            saveUserData();
-            populateCreditCardDropdowns();
-            displayCreditCards();
-            displayExpenses();
-        }
-
-        function addEMI() {
-            const description = document.getElementById('emiDescription').value.trim();
-            const amount = parseFloat(document.getElementById('emiAmount').value);
-            const startDate = document.getElementById('emiStartDate').value;
-            const tenure = parseInt(document.getElementById('emiTenure').value);
-            const creditCard = document.getElementById('emiCard').value;
-            
-            if (!description || !amount || !startDate || !tenure || !creditCard) {
-                alert('Please fill in all EMI fields');
-                return;
-            }
-            
-            if (amount <= 0) {
-                alert('Please enter a valid EMI amount greater than 0');
-                return;
-            }
-            
-            const newEMI = {
-                id: Date.now(),
-                description: description,
-                amount: amount,
-                startDate: startDate,
-                tenure: tenure,
-                creditCard: creditCard,
-                createdAt: new Date().toISOString()
-            };
-            
-            emis.push(newEMI);
-            saveUserData();
-            displayEMIs();
-            updateStats();
-            
-            // Reset form
-            document.getElementById('emiDescription').value = '';
-            document.getElementById('emiAmount').value = '';
-            document.getElementById('emiStartDate').valueAsDate = new Date();
-            document.getElementById('emiTenure').value = '';
-            document.getElementById('emiCard').value = '';
-            
-            alert('EMI added successfully!');
-        }
-
-        function removeEMI(emiId) {
-            if (confirm('Remove this EMI?')) {
-                emis = emis.filter(emi => emi.id !== emiId);
+                
+                const hasExpenses = expenses.some(e => e.creditCard === card.name);
+                const hasEMIs = emis.some(e => e.creditCard === card.name);
+                
+                if (hasExpenses || hasEMIs) {
+                    const message = `This card has ${hasExpenses ? 'expenses' : ''}${hasExpenses && hasEMIs ? ' and ' : ''}${hasEMIs ? 'EMIs' : ''}. Remove anyway?`;
+                    if (!confirm(message)) {
+                        return;
+                    }
+                }
+                
+                creditCards = creditCards.filter(c => c.id !== cardId);
                 saveUserData();
-                displayEMIs();
-                updateStats();
-            }
-        }
-
-        function removeExpense(expenseId) {
-            if (confirm('Remove this expense?')) {
-                expenses = expenses.filter(expense => expense.id !== expenseId);
-                saveUserData();
+                populateCreditCardDropdowns();
+                displayCreditCards();
                 displayExpenses();
-                updateStats();
+                showSuccess('Credit card removed successfully!');
+            } catch (error) {
+                console.error('Error removing credit card:', error);
+                showError('Failed to remove credit card');
             }
         }
 
         function displayCreditCards() {
-            const cardsList = document.getElementById('cardsList');
-            
-            if (creditCards.length === 0) {
-                cardsList.innerHTML = '<div class="no-data">No credit cards added yet.</div>';
-                return;
-            }
-
-            let html = '';
-            creditCards.forEach(card => {
-                const expenseCount = expenses.filter(e => e.creditCard === card.name).length;
-                const totalAmount = expenses.filter(e => e.creditCard === card.name)
-                    .reduce((sum, e) => sum + e.amount, 0);
-
-                html += `
-                    <div class="card-item">
-                        <div>
-                            <div class="card-header">
-                                <strong>${card.name}</strong>
-                            </div>
-                            <div class="expense-details">
-                                ${expenseCount} transactions • ₹${totalAmount.toFixed(2)}
-                            </div>
-                        </div>
-                        <button class="delete-btn" onclick="removeCreditCard(${card.id})">Remove</button>
-                    </div>
-                `;
-            });
-
-            cardsList.innerHTML = html;
-            populateCreditCardDropdowns();
-        }
-
-        function displayEMIs() {
-            const emiList = document.getElementById('emiList');
-            
-            if (emis.length === 0) {
-                emiList.innerHTML = '<div class="no-data">No EMIs added yet.</div>';
-                return;
-            }
-
-            let html = '';
-            emis.forEach(emi => {
-                const startDate = new Date(emi.startDate);
-                const currentDate = new Date();
-                const monthsElapsed = Math.max(0, (currentDate.getFullYear() - startDate.getFullYear()) * 12 + (currentDate.getMonth() - startDate.getMonth()));
-                const monthsRemaining = Math.max(0, emi.tenure - monthsElapsed);
-                const progressPercentage = Math.min(100, (monthsElapsed / emi.tenure) * 100);
-
-                html += `
-                    <div class="emi-item">
-                        <div class="emi-header">
-                            <div>
-                                <div class="emi-amount">₹${emi.amount.toFixed(2)}/month</div>
-                                <strong>${emi.description}</strong>
-                            </div>
-                            <button class="delete-btn" onclick="removeEMI(${emi.id})">Remove</button>
-                        </div>
-                        <div class="emi-details">
-                            Card: ${emi.creditCard} • ${monthsRemaining} months remaining
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: ${progressPercentage}%"></div>
-                        </div>
-                    </div>
-                `;
-            });
-
-            emiList.innerHTML = html;
-        }
-
-        function displayExpenses() {
-            const expensesList = document.getElementById('expensesList');
-            const filterMonth = document.getElementById('filterMonth').value;
-            const filterCategory = document.getElementById('filterCategory').value;
-            const filterCard = document.getElementById('filterCard').value;
-
-            let filteredExpenses = expenses.filter(expense => {
-                const expenseDate = new Date(expense.date);
-                const monthYear = `${expenseDate.getFullYear()}-${String(expenseDate.getMonth() + 1).padStart(2, '0')}`;
+            try {
+                const cardsList = document.getElementById('cardsList');
+                if (!cardsList) return;
                 
-                return (!filterMonth || monthYear === filterMonth) &&
-                       (!filterCategory || expense.category === filterCategory) &&
-                       (!filterCard || expense.creditCard === filterCard);
-            });
+                if (creditCards.length === 0) {
+                    cardsList.innerHTML = '<div class="no-data">No credit cards added yet.</div>';
+                    return;
+                }
 
-            if (filteredExpenses.length === 0) {
-                expensesList.innerHTML = '<div class="no-data">No expenses match your filters.</div>';
-                return;
-            }
+                let html = '';
+                creditCards.forEach(card => {
+                    const expenseCount = expenses.filter(e => e.creditCard === card.name).length;
+                    const totalAmount = expenses.filter(e => e.creditCard === card.name)
+                        .reduce((sum, e) => sum + e.amount, 0);
 
-            let html = '';
-            filteredExpenses.forEach(expense => {
-                html += `
-                    <div class="expense-item">
-                        <div class="expense-header">
+                    html += `
+                        <div class="card-item">
                             <div>
-                                <div class="expense-amount">₹${expense.amount.toFixed(2)}</div>
-                                <div>
-                                    <span class="expense-category">${expense.category}</span>
-                                    <span class="expense-card">${expense.creditCard}</span>
+                                <div class="card-header">
+                                    <strong>${escapeHtml(card.name)}</strong>
+                                </div>
+                                <div class="expense-details">
+                                    ${expenseCount} transactions • ₹${totalAmount.toFixed(2)}
                                 </div>
                             </div>
-                            <button class="delete-btn" onclick="removeExpense(${expense.id})">Delete</button>
+                            <button class="delete-btn" onclick="removeCreditCard(${card.id})">Remove</button>
                         </div>
-                        <div class="expense-details">
-                            <strong>${expense.merchant}</strong>
-                            ${expense.description ? `• ${expense.description}` : ''}
-                            <br><small>${new Date(expense.date).toLocaleDateString()}</small>
-                        </div>
-                    </div>
-                `;
-            });
+                    `;
+                });
 
-            expensesList.innerHTML = html;
-        }
-
-        function updateStats() {
-            const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
-            const currentMonth = new Date();
-            const monthlyExpenses = expenses.filter(expense => {
-                const expenseDate = new Date(expense.date);
-                return expenseDate.getMonth() === currentMonth.getMonth() && 
-                       expenseDate.getFullYear() === currentMonth.getFullYear();
-            }).reduce((sum, expense) => sum + expense.amount, 0);
-
-            const monthlyEMI = emis.reduce((sum, emi) => sum + emi.amount, 0);
-
-            document.getElementById('totalExpenses').textContent = `₹${totalExpenses.toFixed(2)}`;
-            document.getElementById('monthlyExpenses').textContent = `₹${monthlyExpenses.toFixed(2)}`;
-            document.getElementById('monthlyEMI').textContent = `₹${monthlyEMI.toFixed(2)}`;
-            document.getElementById('expenseCount').textContent = expenses.length;
-        }
-
-        function populateMonthFilter() {
-            const monthFilter = document.getElementById('filterMonth');
-            const months = new Set();
-            
-            expenses.forEach(expense => {
-                const date = new Date(expense.date);
-                const monthYear = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
-                months.add(monthYear);
-            });
-
-            const sortedMonths = Array.from(months).sort().reverse();
-            
-            let options = '<option value="">All Months</option>';
-            sortedMonths.forEach(month => {
-                const [year, monthNum] = month.split('-');
-                const monthName = new Date(year, monthNum - 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-                options += `<option value="${month}">${monthName}</option>`;
-            });
-            
-            monthFilter.innerHTML = options;
+                cardsList.innerHTML = html;
+                populateCreditCardDropdowns();
+            } catch (error) {
+                console.error('Error displaying credit cards:', error);
+            }
         }
 
         function populateCreditCardDropdowns() {
-            const creditCardSelect = document.getElementById('creditCard');
-            const emiCardSelect = document.getElementById('emiCard');
-            const filterCardSelect = document.getElementById('filterCard');
+            try {
+                const creditCardSelect = document.getElementById('creditCard');
+                const emiCardSelect = document.getElementById('emiCard');
+                const filterCardSelect = document.getElementById('filterCard');
 
-            let options = '<option value="">Select Card</option>';
-            creditCards.forEach(card => {
-                options += `<option value="${card.name}">${card.name}</option>`;
-            });
+                let options = '<option value="">Select Card</option>';
+                creditCards.forEach(card => {
+                    options += `<option value="${escapeHtml(card.name)}">${escapeHtml(card.name)}</option>`;
+                });
 
-            if (creditCardSelect) creditCardSelect.innerHTML = options;
-            if (emiCardSelect) emiCardSelect.innerHTML = options;
+                if (creditCardSelect) creditCardSelect.innerHTML = options;
+                if (emiCardSelect) emiCardSelect.innerHTML = options;
 
-            let filterOptions = '<option value="">All Cards</option>';
-            creditCards.forEach(card => {
-                filterOptions += `<option value="${card.name}">${card.name}</option>`;
-            });
-            if (filterCardSelect) filterCardSelect.innerHTML = filterOptions;
+                let filterOptions = '<option value="">All Cards</option>';
+                creditCards.forEach(card => {
+                    filterOptions += `<option value="${escapeHtml(card.name)}">${escapeHtml(card.name)}</option>`;
+                });
+                if (filterCardSelect) filterCardSelect.innerHTML = filterOptions;
+            } catch (error) {
+                console.error('Error populating credit card dropdowns:', error);
+            }
         }
 
-        function exportData() {
-            if (expenses.length === 0) {
-                alert('No data to export');
-                return;
+        // EMI management functions
+        function addEMI() {
+            try {
+                const description = document.getElementById('emiDescription').value.trim();
+                const amount = parseFloat(document.getElementById('emiAmount').value);
+                const startDate = document.getElementById('emiStartDate').value;
+                const tenure = parseInt(document.getElementById('emiTenure').value);
+                const creditCard = document.getElementById('emiCard').value;
+                
+                if (!description || !amount || !startDate || !tenure || !creditCard) {
+                    alert('Please fill in all EMI fields');
+                    return;
+                }
+                
+                if (amount <= 0) {
+                    alert('Please enter a valid EMI amount greater than 0');
+                    return;
+                }
+                
+                if (tenure <= 0) {
+                    alert('Please enter a valid tenure greater than 0');
+                    return;
+                }
+                
+                const newEMI = {
+                    id: Date.now(),
+                    description: description,
+                    amount: amount,
+                    startDate: startDate,
+                    tenure: tenure,
+                    creditCard: creditCard,
+                    createdAt: new Date().toISOString()
+                };
+                
+                emis.push(newEMI);
+                saveUserData();
+                displayEMIs();
+                updateStats();
+                
+                // Reset form
+                document.getElementById('emiDescription').value = '';
+                document.getElementById('emiAmount').value = '';
+                document.getElementById('emiStartDate').valueAsDate = new Date();
+                document.getElementById('emiTenure').value = '';
+                document.getElementById('emiCard').value = '';
+                
+                showSuccess('EMI added successfully!');
+            } catch (error) {
+                console.error('Error adding EMI:', error);
+                showError('Failed to add EMI');
             }
+        }
 
-            const data = {
-                user: currentUser,
-                expenses: expenses,
-                creditCards: creditCards,
-                emis: emis,
-                exportDate: new Date().toISOString()
-            };
+        function removeEMI(emiId) {
+            try {
+                if (confirm('Remove this EMI?')) {
+                    emis = emis.filter(emi => emi.id !== emiId);
+                    saveUserData();
+                    displayEMIs();
+                    updateStats();
+                    showSuccess('EMI removed successfully!');
+                }
+            } catch (error) {
+                console.error('Error removing EMI:', error);
+                showError('Failed to remove EMI');
+            }
+        }
 
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${currentUser}-credit-card-data.json`;
-            a.click();
-            URL.revokeObjectURL(url);
+        function displayEMIs() {
+            try {
+                const emiList = document.getElementById('emiList');
+                if (!emiList) return;
+                
+                if (emis.length === 0) {
+                    emiList.innerHTML = '<div class="no-data">No EMIs added yet.</div>';
+                    return;
+                }
+
+                let html = '';
+                emis.forEach(emi => {
+                    const startDate = new Date(emi.startDate);
+                    const currentDate = new Date();
+                    const monthsElapsed = Math.max(0, (currentDate.getFullYear() - startDate.getFullYear()) * 12 + (currentDate.getMonth() - startDate.getMonth()));
+                    const monthsRemaining = Math.max(0, emi.tenure - monthsElapsed);
+                    const progressPercentage = Math.min(100, (monthsElapsed / emi.tenure) * 100);
+
+                    html += `
+                        <div class="emi-item">
+                            <div class="emi-header">
+                                <div>
+                                    <div class="emi-amount">₹${emi.amount.toFixed(2)}/month</div>
+                                    <strong>${escapeHtml(emi.description)}</strong>
+                                </div>
+                                <button class="delete-btn" onclick="removeEMI(${emi.id})">Remove</button>
+                            </div>
+                            <div class="emi-details">
+                                Card: ${escapeHtml(emi.creditCard)} • ${monthsRemaining} months remaining
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${progressPercentage}%"></div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                emiList.innerHTML = html;
+            } catch (error) {
+                console.error('Error displaying EMIs:', error);
+            }
+        }
+
+        // Expense management functions
+        function removeExpense(expenseId) {
+            try {
+                if (confirm('Remove this expense?')) {
+                    expenses = expenses.filter(expense => expense.id !== expenseId);
+                    saveUserData();
+                    displayExpenses();
+                    updateStats();
+                    populateMonthFilter();
+                    showSuccess('Expense removed successfully!');
+                }
+            } catch (error) {
+                console.error('Error removing expense:', error);
+                showError('Failed to remove expense');
+            }
+        }
+
+        function displayExpenses() {
+            try {
+                const expensesList = document.getElementById('expensesList');
+                if (!expensesList) return;
+
+                const filterMonth = document.getElementById('filterMonth').value;
+                const filterCategory = document.getElementById('filterCategory').value;
+                const filterCard = document.getElementById('filterCard').value;
+
+                let filteredExpenses = expenses.filter(expense => {
+                    const expenseDate = new Date(expense.date);
+                    const monthYear = `${expenseDate.getFullYear()}-${String(expenseDate.getMonth() + 1).padStart(2, '0')}`;
+                    
+                    return (!filterMonth || monthYear === filterMonth) &&
+                           (!filterCategory || expense.category === filterCategory) &&
+                           (!filterCard || expense.creditCard === filterCard);
+                });
+
+                if (filteredExpenses.length === 0) {
+                    expensesList.innerHTML = '<div class="no-data">No expenses match your filters.</div>';
+                    return;
+                }
+
+                let html = '';
+                filteredExpenses.forEach(expense => {
+                    html += `
+                        <div class="expense-item">
+                            <div class="expense-header">
+                                <div>
+                                    <div class="expense-amount">₹${expense.amount.toFixed(2)}</div>
+                                    <div>
+                                        <span class="expense-category">${escapeHtml(expense.category)}</span>
+                                        <span class="expense-card">${escapeHtml(expense.creditCard)}</span>
+                                    </div>
+                                </div>
+                                <button class="delete-btn" onclick="removeExpense(${expense.id})">Delete</button>
+                            </div>
+                            <div class="expense-details">
+                                <strong>${escapeHtml(expense.merchant)}</strong>
+                                ${expense.description ? `• ${escapeHtml(expense.description)}` : ''}
+                                <br><small>${new Date(expense.date).toLocaleDateString()}</small>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                expensesList.innerHTML = html;
+            } catch (error) {
+                console.error('Error displaying expenses:', error);
+            }
+        }
+
+        function updateStats() {
+            try {
+                const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+                const currentMonth = new Date();
+                const monthlyExpenses = expenses.filter(expense => {
+                    const expenseDate = new Date(expense.date);
+                    return expenseDate.getMonth() === currentMonth.getMonth() && 
+                           expenseDate.getFullYear() === currentMonth.getFullYear();
+                }).reduce((sum, expense) => sum + expense.amount, 0);
+
+                const monthlyEMI = emis.reduce((sum, emi) => sum + emi.amount, 0);
+
+                const totalExpensesEl = document.getElementById('totalExpenses');
+                const monthlyExpensesEl = document.getElementById('monthlyExpenses');
+                const monthlyEMIEl = document.getElementById('monthlyEMI');
+                const expenseCountEl = document.getElementById('expenseCount');
+
+                if (totalExpensesEl) totalExpensesEl.textContent = `₹${totalExpenses.toFixed(2)}`;
+                if (monthlyExpensesEl) monthlyExpensesEl.textContent = `₹${monthlyExpenses.toFixed(2)}`;
+                if (monthlyEMIEl) monthlyEMIEl.textContent = `₹${monthlyEMI.toFixed(2)}`;
+                if (expenseCountEl) expenseCountEl.textContent = expenses.length;
+            } catch (error) {
+                console.error('Error updating stats:', error);
+            }
+        }
+
+        function populateMonthFilter() {
+            try {
+                const monthFilter = document.getElementById('filterMonth');
+                if (!monthFilter) return;
+
+                const months = new Set();
+                
+                expenses.forEach(expense => {
+                    const date = new Date(expense.date);
+                    const monthYear = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+                    months.add(monthYear);
+                });
+
+                const sortedMonths = Array.from(months).sort().reverse();
+                
+                let options = '<option value="">All Months</option>';
+                sortedMonths.forEach(month => {
+                    const [year, monthNum] = month.split('-');
+                    const monthName = new Date(year, monthNum - 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+                    options += `<option value="${month}">${monthName}</option>`;
+                });
+                
+                monthFilter.innerHTML = options;
+            } catch (error) {
+                console.error('Error populating month filter:', error);
+            }
+        }
+
+        // Utility functions
+        function exportData() {
+            try {
+                if (expenses.length === 0 && creditCards.length === 0 && emis.length === 0) {
+                    alert('No data to export');
+                    return;
+                }
+
+                const data = {
+                    user: currentUser,
+                    expenses: expenses,
+                    creditCards: creditCards,
+                    emis: emis,
+                    exportDate: new Date().toISOString()
+                };
+
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${currentUser}-credit-card-data-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showSuccess('Data exported successfully!');
+            } catch (error) {
+                console.error('Error exporting data:', error);
+                showError('Failed to export data');
+            }
         }
 
         function clearAllExpenses() {
-            if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
-                expenses = [];
-                creditCards = [];
-                emis = [];
-                nextId = 1;
-                
-                saveUserData();
-                displayExpenses();
-                displayCreditCards();
-                displayEMIs();
-                updateStats();
-                populateMonthFilter();
-                
-                alert('All data cleared successfully!');
+            try {
+                if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
+                    expenses = [];
+                    creditCards = [];
+                    emis = [];
+                    nextId = 1;
+                    
+                    saveUserData();
+                    displayExpenses();
+                    displayCreditCards();
+                    displayEMIs();
+                    updateStats();
+                    populateMonthFilter();
+                    
+                    showSuccess('All data cleared successfully!');
+                }
+            } catch (error) {
+                console.error('Error clearing data:', error);
+                showError('Failed to clear data');
             }
         }
 
-        // Handle Enter key for login forms
-        document.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                const loginScreen = document.getElementById('loginScreen');
-                if (!loginScreen.classList.contains('hidden')) {
-                    const loginForm = document.getElementById('loginForm');
-                    const registerForm = document.getElementById('registerForm');
-                    
-                    if (!loginForm.classList.contains('hidden')) {
-                        login();
-                    } else if (!registerForm.classList.contains('hidden')) {
-                        register();
-                    }
-                }
-            }
-        });
+        function escapeHtml(text) {
+            if (typeof text !== 'string') return text;
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
     </script>
 </body>
 </html>
