@@ -598,27 +598,51 @@
     </div>
 
     <script>
-        // User Authentication System
-        let users = {
-            'arpbat': {
-                password: 'arpitha7',
-                data: {
-                    expenses: [],
-                    creditCards: [],
-                    emis: [],
-                    nextId: 1
-                }
-            }
-        };
-        
+        // User Authentication System with Persistent Storage
         let currentUser = null;
         let expenses = [];
         let creditCards = [];
         let emis = [];
         let nextId = 1;
 
+        // Load users from localStorage or create default
+        function loadUsersFromStorage() {
+            const savedUsers = localStorage.getItem('creditCardTrackerUsers');
+            if (savedUsers) {
+                return JSON.parse(savedUsers);
+            } else {
+                // Create default user
+                const defaultUsers = {
+                    'arpbat': {
+                        password: 'arpitha7',
+                        data: {
+                            expenses: [],
+                            creditCards: [],
+                            emis: [],
+                            nextId: 1
+                        }
+                    }
+                };
+                localStorage.setItem('creditCardTrackerUsers', JSON.stringify(defaultUsers));
+                return defaultUsers;
+            }
+        }
+
+        // Save users to localStorage
+        function saveUsersToStorage(users) {
+            localStorage.setItem('creditCardTrackerUsers', JSON.stringify(users));
+        }
+
+        // Get users object
+        function getUsers() {
+            return loadUsersFromStorage();
+        }
+
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
+            // Load users from storage
+            const users = getUsers();
+            
             // Check if user is already logged in
             const savedUser = getCookie('currentUser');
             if (savedUser && users[savedUser]) {
