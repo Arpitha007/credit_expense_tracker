@@ -109,23 +109,18 @@
         }
 
         .stat-card:nth-child(2) {
-            background: linear-gradient(135deg, #00b894, #00a085);
-            box-shadow: 0 8px 20px rgba(0, 184, 148, 0.3);
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            box-shadow: 0 8px 20px rgba(116, 185, 255, 0.3);
         }
 
         .stat-card:nth-child(3) {
-            background: linear-gradient(135deg, #74b9ff, #0984e3);
-            box-shadow: 0 8px 20px rgba(116, 185, 255, 0.3);
+            background: linear-gradient(135deg, #00b894, #00a085);
+            box-shadow: 0 8px 20px rgba(0, 184, 148, 0.3);
         }
 
         .stat-card:nth-child(4) {
             background: linear-gradient(135deg, #55a3ff, #003d82);
             box-shadow: 0 8px 20px rgba(85, 163, 255, 0.3);
-        }
-
-        .stat-card:nth-child(5) {
-            background: linear-gradient(135deg, #fd79a8, #e84393);
-            box-shadow: 0 8px 20px rgba(253, 121, 168, 0.3);
         }
 
         .stat-value {
@@ -202,7 +197,7 @@
             box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
         }
 
-        .expense-row, .payment-row, .emi-row {
+        .expense-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
@@ -213,6 +208,12 @@
             grid-template-columns: 1fr auto;
             gap: 10px;
             align-items: end;
+        }
+
+        .emi-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
         }
 
         .small-btn {
@@ -228,7 +229,7 @@
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
         }
 
-        .expense-item, .card-item, .emi-item, .payment-item {
+        .expense-item, .card-item, .emi-item {
             background: rgba(255, 255, 255, 0.9);
             padding: 12px;
             border-radius: 8px;
@@ -237,15 +238,11 @@
             transition: all 0.3s ease;
         }
 
-        .payment-item {
-            border-left-color: #00b894;
-        }
-
-        .expense-item:hover, .card-item:hover, .emi-item:hover, .payment-item:hover {
+        .expense-item:hover, .card-item:hover, .emi-item:hover {
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
-        .expense-header, .card-header, .emi-header, .payment-header {
+        .expense-header, .card-header, .emi-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
@@ -260,7 +257,7 @@
             color: #e74c3c;
         }
 
-        .emi-amount, .payment-amount {
+        .emi-amount {
             font-size: 1.1em;
             font-weight: bold;
             color: #00b894;
@@ -285,7 +282,7 @@
             display: inline-block;
         }
 
-        .expense-details, .emi-details, .payment-details {
+        .expense-details, .emi-details {
             color: #666;
             font-size: 0.85em;
             line-height: 1.3;
@@ -380,7 +377,7 @@
         }
 
         @media (max-width: 600px) {
-            .expense-row, .emi-row, .payment-row {
+            .expense-row, .emi-row {
                 grid-template-columns: 1fr;
             }
             
@@ -459,20 +456,16 @@
                 <div class="stat-label">Total Expenses</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value" id="totalPayments">₹0.00</div>
-                <div class="stat-label">Total Payments</div>
-            </div>
-            <div class="stat-card" id="outstandingCard">
-                <div class="stat-value" id="outstandingBalance">₹0.00</div>
-                <div class="stat-label">Outstanding Balance</div>
-            </div>
-            <div class="stat-card">
                 <div class="stat-value" id="monthlyExpenses">₹0.00</div>
                 <div class="stat-label">This Month</div>
             </div>
             <div class="stat-card">
                 <div class="stat-value" id="monthlyEMI">₹0.00</div>
                 <div class="stat-label">Monthly EMIs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="expenseCount">0</div>
+                <div class="stat-label">Transactions</div>
             </div>
         </div>
 
@@ -486,32 +479,6 @@
                 <button type="button" onclick="addCreditCard()" class="small-btn">Add</button>
             </div>
             <div id="cardsList"></div>
-        </div>
-
-        <div class="form-section">
-            <h2>💵 Add Payment</h2>
-            <div class="payment-row">
-                <div class="form-group">
-                    <label for="paymentAmount">Payment Amount (₹)</label>
-                    <input type="number" id="paymentAmount" step="0.01" min="0" placeholder="Amount paid">
-                </div>
-                <div class="form-group">
-                    <label for="paymentDate">Payment Date</label>
-                    <input type="date" id="paymentDate">
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="paymentCard">Credit Card</label>
-                <select id="paymentCard">
-                    <option value="">Select Card</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="paymentDescription">Description (Optional)</label>
-                <input type="text" id="paymentDescription" placeholder="e.g., Bill payment, Partial payment">
-            </div>
-            <button type="button" onclick="addPayment()">Add Payment</button>
-            <div id="paymentsList"></div>
         </div>
 
         <div class="form-section">
@@ -632,12 +599,11 @@
 
     <script>
         // Global variables
-        let users = {};
+        let users = {}; // Fixed: Added missing users declaration
         let currentUser = null;
         let expenses = [];
         let creditCards = [];
         let emis = [];
-        let payments = [];
         let nextId = 1;
 
         // Initialize the app when DOM is loaded
@@ -649,11 +615,13 @@
         // Initialize the application
         function initializeApp() {
             try {
-                // Load users from memory
-                users = loadUsersFromMemory();
+                // Load users from storage
+                users = loadUsersFromStorage();
                 
-                // Check if user is already logged in (using memory)
-                if (currentUser && users[currentUser]) {
+                // Check if user is already logged in
+                const savedUser = getCookie('currentUser');
+                if (savedUser && users[savedUser]) {
+                    currentUser = savedUser;
                     loadUserData();
                     showMainApp();
                 } else {
@@ -725,7 +693,7 @@
                 saveUserData();
                 displayExpenses();
                 updateStats();
-                populateMonthFilter();
+                populateMonthFilter(); // Update month filter with new data
                 
                 // Reset form
                 e.target.reset();
@@ -755,24 +723,41 @@
             }
         }
 
-        // User data management functions (using in-memory storage)
-        function loadUsersFromMemory() {
-            // Return default user if no users exist
-            if (Object.keys(users).length === 0) {
-                return {
-                    'arpbat': {
-                        password: 'arpitha7',
-                        data: {
-                            expenses: [],
-                            creditCards: [],
-                            emis: [],
-                            payments: [],
-                            nextId: 1
+        // User data management functions
+        function loadUsersFromStorage() {
+            try {
+                const savedUsers = window.localStorage.getItem('creditCardTrackerUsers');
+                if (savedUsers) {
+                    return JSON.parse(savedUsers);
+                } else {
+                    // Create default user
+                    const defaultUsers = {
+                        'arpbat': {
+                            password: 'arpitha7',
+                            data: {
+                                expenses: [],
+                                creditCards: [],
+                                emis: [],
+                                nextId: 1
+                            }
                         }
-                    }
-                };
+                    };
+                    saveUsersToStorage(defaultUsers);
+                    return defaultUsers;
+                }
+            } catch (error) {
+                console.error('Error loading users from storage:', error);
+                return {};
             }
-            return users;
+        }
+
+        function saveUsersToStorage(usersData) {
+            try {
+                window.localStorage.setItem('creditCardTrackerUsers', JSON.stringify(usersData));
+            } catch (error) {
+                console.error('Error saving users to storage:', error);
+                showError('Failed to save user data');
+            }
         }
 
         function loadUserData() {
@@ -782,7 +767,6 @@
                     expenses = [...(userData.expenses || [])];
                     creditCards = [...(userData.creditCards || [])];
                     emis = [...(userData.emis || [])];
-                    payments = [...(userData.payments || [])];
                     nextId = userData.nextId || 1;
                     
                     const currentUserElement = document.getElementById('currentUser');
@@ -793,16 +777,13 @@
                     // Initialize dates
                     const dateInput = document.getElementById('date');
                     const emiStartDateInput = document.getElementById('emiStartDate');
-                    const paymentDateInput = document.getElementById('paymentDate');
                     if (dateInput) dateInput.valueAsDate = new Date();
                     if (emiStartDateInput) emiStartDateInput.valueAsDate = new Date();
-                    if (paymentDateInput) paymentDateInput.valueAsDate = new Date();
                     
                     // Display data
                     populateMonthFilter();
                     displayCreditCards();
                     displayEMIs();
-                    displayPayments();
                     displayExpenses();
                     updateStats();
                 }
@@ -819,113 +800,13 @@
                         expenses: [...expenses],
                         creditCards: [...creditCards],
                         emis: [...emis],
-                        payments: [...payments],
                         nextId: nextId
                     };
+                    saveUsersToStorage(users);
                 }
             } catch (error) {
                 console.error('Error saving user data:', error);
                 showError('Failed to save user data');
-            }
-        }
-
-        // Payment management functions
-        function addPayment() {
-            try {
-                const amount = parseFloat(document.getElementById('paymentAmount').value);
-                const date = document.getElementById('paymentDate').value;
-                const creditCard = document.getElementById('paymentCard').value;
-                const description = document.getElementById('paymentDescription').value.trim();
-
-                // Validation
-                if (!amount || amount <= 0) {
-                    alert('Please enter a valid payment amount greater than 0');
-                    return;
-                }
-
-                if (!date) {
-                    alert('Please select a payment date');
-                    return;
-                }
-
-                if (!creditCard) {
-                    alert('Please select a credit card');
-                    return;
-                }
-
-                const payment = {
-                    id: nextId++,
-                    amount: amount,
-                    date: date,
-                    creditCard: creditCard,
-                    description: description || 'Bill Payment',
-                    timestamp: new Date().toISOString()
-                };
-
-                payments.unshift(payment);
-                saveUserData();
-                displayPayments();
-                updateStats();
-
-                // Reset form
-                document.getElementById('paymentAmount').value = '';
-                document.getElementById('paymentDate').valueAsDate = new Date();
-                document.getElementById('paymentCard').value = '';
-                document.getElementById('paymentDescription').value = '';
-
-                showSuccess('Payment added successfully!');
-            } catch (error) {
-                console.error('Error adding payment:', error);
-                showError('Failed to add payment');
-            }
-        }
-
-        function removePayment(paymentId) {
-            try {
-                if (confirm('Remove this payment?')) {
-                    payments = payments.filter(payment => payment.id !== paymentId);
-                    saveUserData();
-                    displayPayments();
-                    updateStats();
-                    showSuccess('Payment removed successfully!');
-                }
-            } catch (error) {
-                console.error('Error removing payment:', error);
-                showError('Failed to remove payment');
-            }
-        }
-
-        function displayPayments() {
-            try {
-                const paymentsList = document.getElementById('paymentsList');
-                if (!paymentsList) return;
-
-                if (payments.length === 0) {
-                    paymentsList.innerHTML = '<div class="no-data">No payments recorded yet.</div>';
-                    return;
-                }
-
-                let html = '';
-                payments.forEach(payment => {
-                    html += `
-                        <div class="payment-item">
-                            <div class="payment-header">
-                                <div>
-                                    <div class="payment-amount">₹${payment.amount.toFixed(2)}</div>
-                                    <strong>${escapeHtml(payment.description)}</strong>
-                                </div>
-                                <button class="delete-btn" onclick="removePayment(${payment.id})">Remove</button>
-                            </div>
-                            <div class="payment-details">
-                                Card: ${escapeHtml(payment.creditCard)} • ${new Date(payment.date).toLocaleDateString()}
-                            </div>
-                        </div>
-                    `;
-                });
-
-                paymentsList.innerHTML = html;
-            } catch (error) {
-                console.error('Error displaying payments:', error);
             }
         }
 
@@ -979,6 +860,7 @@
                 }
 
                 currentUser = username;
+                setCookie('currentUser', username, 30); // 30 days
                 loadUserData();
                 showMainApp();
                 showSuccess('Login successful!');
@@ -1026,11 +908,11 @@
                         expenses: [],
                         creditCards: [],
                         emis: [],
-                        payments: [],
                         nextId: 1
                     }
                 };
 
+                saveUsersToStorage(users);
                 showSuccess('Registration successful! You can now login.');
                 
                 // Clear form and switch to login
@@ -1051,6 +933,7 @@
                 if (confirm('Are you sure you want to logout?')) {
                     saveUserData();
                     currentUser = null;
+                    setCookie('currentUser', '', -1);
                     
                     // Clear form data
                     const loginUsername = document.getElementById('loginUsername');
@@ -1124,6 +1007,33 @@
             if (successDiv) successDiv.classList.add('hidden');
         }
 
+        // Cookie functions
+        function setCookie(name, value, days) {
+            try {
+                const expires = new Date();
+                expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+                document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+            } catch (error) {
+                console.error('Error setting cookie:', error);
+            }
+        }
+
+        function getCookie(name) {
+            try {
+                const nameEQ = name + "=";
+                const ca = document.cookie.split(';');
+                for (let i = 0; i < ca.length; i++) {
+                    let c = ca[i];
+                    while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+                }
+                return null;
+            } catch (error) {
+                console.error('Error getting cookie:', error);
+                return null;
+            }
+        }
+
         // Credit card management functions
         function addCreditCard() {
             try {
@@ -1167,14 +1077,9 @@
                 
                 const hasExpenses = expenses.some(e => e.creditCard === card.name);
                 const hasEMIs = emis.some(e => e.creditCard === card.name);
-                const hasPayments = payments.some(p => p.creditCard === card.name);
                 
-                if (hasExpenses || hasEMIs || hasPayments) {
-                    let items = [];
-                    if (hasExpenses) items.push('expenses');
-                    if (hasEMIs) items.push('EMIs');
-                    if (hasPayments) items.push('payments');
-                    const message = `This card has ${items.join(', ')}. Remove anyway?`;
+                if (hasExpenses || hasEMIs) {
+                    const message = `This card has ${hasExpenses ? 'expenses' : ''}${hasExpenses && hasEMIs ? ' and ' : ''}${hasEMIs ? 'EMIs' : ''}. Remove anyway?`;
                     if (!confirm(message)) {
                         return;
                     }
@@ -1205,24 +1110,20 @@
                 let html = '';
                 creditCards.forEach(card => {
                     const expenseCount = expenses.filter(e => e.creditCard === card.name).length;
-                    const totalExpenses = expenses.filter(e => e.creditCard === card.name)
+                    const totalAmount = expenses.filter(e => e.creditCard === card.name)
                         .reduce((sum, e) => sum + e.amount, 0);
-                    const totalPayments = payments.filter(p => p.creditCard === card.name)
-                        .reduce((sum, p) => sum + p.amount, 0);
-                    const balance = totalExpenses - totalPayments;
 
                     html += `
                         <div class="card-item">
-                            <div class="card-header">
-                                <div>
+                            <div>
+                                <div class="card-header">
                                     <strong>${escapeHtml(card.name)}</strong>
-                                    <div class="expense-details">
-                                        ${expenseCount} transactions • Expenses: ₹${totalExpenses.toFixed(2)} • Payments: ₹${totalPayments.toFixed(2)}
-                                        <br>Outstanding: ₹${balance.toFixed(2)}
-                                    </div>
                                 </div>
-                                <button class="delete-btn" onclick="removeCreditCard(${card.id})">Remove</button>
+                                <div class="expense-details">
+                                    ${expenseCount} transactions • ₹${totalAmount.toFixed(2)}
+                                </div>
                             </div>
+                            <button class="delete-btn" onclick="removeCreditCard(${card.id})">Remove</button>
                         </div>
                     `;
                 });
@@ -1238,7 +1139,6 @@
             try {
                 const creditCardSelect = document.getElementById('creditCard');
                 const emiCardSelect = document.getElementById('emiCard');
-                const paymentCardSelect = document.getElementById('paymentCard');
                 const filterCardSelect = document.getElementById('filterCard');
 
                 let options = '<option value="">Select Card</option>';
@@ -1248,7 +1148,6 @@
 
                 if (creditCardSelect) creditCardSelect.innerHTML = options;
                 if (emiCardSelect) emiCardSelect.innerHTML = options;
-                if (paymentCardSelect) paymentCardSelect.innerHTML = options;
 
                 let filterOptions = '<option value="">All Cards</option>';
                 creditCards.forEach(card => {
@@ -1443,9 +1342,6 @@
         function updateStats() {
             try {
                 const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
-                const totalPayments = payments.reduce((sum, payment) => sum + payment.amount, 0);
-                const outstandingBalance = totalExpenses - totalPayments;
-                
                 const currentMonth = new Date();
                 const monthlyExpenses = expenses.filter(expense => {
                     const expenseDate = new Date(expense.date);
@@ -1456,29 +1352,14 @@
                 const monthlyEMI = emis.reduce((sum, emi) => sum + emi.amount, 0);
 
                 const totalExpensesEl = document.getElementById('totalExpenses');
-                const totalPaymentsEl = document.getElementById('totalPayments');
-                const outstandingBalanceEl = document.getElementById('outstandingBalance');
                 const monthlyExpensesEl = document.getElementById('monthlyExpenses');
                 const monthlyEMIEl = document.getElementById('monthlyEMI');
-                const outstandingCard = document.getElementById('outstandingCard');
+                const expenseCountEl = document.getElementById('expenseCount');
 
                 if (totalExpensesEl) totalExpensesEl.textContent = `₹${totalExpenses.toFixed(2)}`;
-                if (totalPaymentsEl) totalPaymentsEl.textContent = `₹${totalPayments.toFixed(2)}`;
-                if (outstandingBalanceEl) {
-                    outstandingBalanceEl.textContent = `₹${outstandingBalance.toFixed(2)}`;
-                    // Color code the outstanding balance
-                    if (outstandingCard) {
-                        if (outstandingBalance > 0) {
-                            outstandingCard.style.background = 'linear-gradient(135deg, #ff6b6b, #ee5a24)';
-                        } else if (outstandingBalance < 0) {
-                            outstandingCard.style.background = 'linear-gradient(135deg, #00b894, #00a085)';
-                        } else {
-                            outstandingCard.style.background = 'linear-gradient(135deg, #74b9ff, #0984e3)';
-                        }
-                    }
-                }
                 if (monthlyExpensesEl) monthlyExpensesEl.textContent = `₹${monthlyExpenses.toFixed(2)}`;
                 if (monthlyEMIEl) monthlyEMIEl.textContent = `₹${monthlyEMI.toFixed(2)}`;
+                if (expenseCountEl) expenseCountEl.textContent = expenses.length;
             } catch (error) {
                 console.error('Error updating stats:', error);
             }
@@ -1515,7 +1396,7 @@
         // Utility functions
         function exportData() {
             try {
-                if (expenses.length === 0 && creditCards.length === 0 && emis.length === 0 && payments.length === 0) {
+                if (expenses.length === 0 && creditCards.length === 0 && emis.length === 0) {
                     alert('No data to export');
                     return;
                 }
@@ -1525,7 +1406,6 @@
                     expenses: expenses,
                     creditCards: creditCards,
                     emis: emis,
-                    payments: payments,
                     exportDate: new Date().toISOString()
                 };
 
@@ -1552,14 +1432,12 @@
                     expenses = [];
                     creditCards = [];
                     emis = [];
-                    payments = [];
                     nextId = 1;
                     
                     saveUserData();
                     displayExpenses();
                     displayCreditCards();
                     displayEMIs();
-                    displayPayments();
                     updateStats();
                     populateMonthFilter();
                     
